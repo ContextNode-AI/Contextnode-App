@@ -1,0 +1,82 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-secondary: var(--secondary);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+:root {
+  /* Using Raycast-inspired dark theme as the default */
+  --background: #050505;
+  --foreground: #ffffff;
+
+  --primary: #ffffff;
+  --secondary: #101014;
+
+  --muted: #0B0B0F;
+  --muted-foreground: #8a8a93;
+
+  --border: rgba(255, 255, 255, 0.1);
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom Utilities for cinematic effects */
+@layer utilities {
+  .glass {
+    background: rgba(11, 11, 15, 0.5);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--border);
+  }
+
+  .ambient-glow-red {
+    background: radial-gradient(circle, rgba(255, 50, 50, 0.1) 0%, rgba(0, 0, 0, 0) 70%);
+  }
+
+  .ambient-glow-blue {
+    background: radial-gradient(circle, rgba(50, 100, 255, 0.1) 0%, rgba(0, 0, 0, 0) 70%);
+  }
+
+  .grid-background {
+    background-image: linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+    background-size: 50px 50px;
+    mask-image: radial-gradient(circle at center, black, transparent 80%);
+    -webkit-mask-image: radial-gradient(circle at center, black, transparent 80%);
+  }
+}
+
+.hide-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari and Opera */
+}
+
+/* Collapse empty Google AdSense frames automatically */
+ins.adsbygoogle[data-ad-status="unfilled"],
+ins.adsbygoogle[data-ad-status="empty"] {
+  display: none !important;
+  height: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+}
+
