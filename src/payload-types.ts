@@ -69,6 +69,9 @@ export interface Config {
   collections: {
     users: User;
     media: Media;
+    categories: Category;
+    tags: Tag;
+    'ai-assets': AiAsset;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -78,13 +81,16 @@ export interface Config {
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    categories: CategoriesSelect<false> | CategoriesSelect<true>;
+    tags: TagsSelect<false> | TagsSelect<true>;
+    'ai-assets': AiAssetsSelect<false> | AiAssetsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
   };
   db: {
-    defaultIDType: string;
+    defaultIDType: number;
   };
   fallbackLocale: null;
   globals: {};
@@ -122,7 +128,25 @@ export interface UserAuthOperations {
  * via the `definition` "users".
  */
 export interface User {
-  id: string;
+  id: number;
+  name: string;
+  /**
+   * Account permission role across the ContextNode platform.
+   */
+  role: 'USER' | 'CREATOR' | 'ADMIN';
+  /**
+   * Operational status of the account.
+   */
+  status: 'ACTIVE' | 'SUSPENDED' | 'DISABLED';
+  /**
+   * Customer subscription tier / access tier.
+   */
+  plan?: ('FREE' | 'PAID') | null;
+  /**
+   * Profile image URL or initials identifier.
+   */
+  avatar?: string | null;
+  bio?: string | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -130,6 +154,7 @@ export interface User {
   resetPasswordExpiration?: string | null;
   salt?: string | null;
   hash?: string | null;
+  resetPasswordRequestedAt?: string | null;
   loginAttempts?: number | null;
   lockUntil?: string | null;
   sessions?:
@@ -147,8 +172,9 @@ export interface User {
  * via the `definition` "media".
  */
 export interface Media {
-  id: string;
-  alt: string;
+  id: number;
+  alt?: string | null;
+  uploadedBy?: (number | null) | User;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -163,10 +189,279 @@ export interface Media {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "categories".
+ */
+export interface Category {
+  id: number;
+  name: string;
+  slug: string;
+  description?: string | null;
+  icon?: string | null;
+  parent?: (number | null) | Category;
+  status?: ('ACTIVE' | 'ARCHIVED') | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tags".
+ */
+export interface Tag {
+  id: number;
+  name: string;
+  slug: string;
+  status?: ('ACTIVE' | 'ARCHIVED') | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ai-assets".
+ */
+export interface AiAsset {
+  id: number;
+  title: string;
+  /**
+   * URL-friendly identifier for the asset (e.g. luxury-product-photography-prompt)
+   */
+  slug: string;
+  /**
+   * Concise summary for discovery cards and catalog previews (max 160 chars)
+   */
+  shortDescription: string;
+  /**
+   * Detailed explanation of what the asset does, when to use it, and expected output. Do not put the actual prompt here.
+   */
+  fullDescription?: string | null;
+  /**
+   * Primary AI Asset architecture type
+   */
+  assetType: 'prompt' | 'context_pack' | 'workflow';
+  /**
+   * Creative prompt modality
+   */
+  promptType?: ('image' | 'video' | 'text') | null;
+  /**
+   * The output/result image of the prompt used as the thumbnail on the public platform. Optional for Context Packs.
+   */
+  coverImage?: (number | null) | Media;
+  /**
+   * The primary generation instruction instruction for the AI model.
+   */
+  mainPrompt?: string | null;
+  /**
+   * Elements, styles, or artifacts to avoid (if supported by the model). Stored separately.
+   */
+  negativePrompt?: string | null;
+  /**
+   * Optional alternative prompts for the same concept (e.g. Front View, 45 Degree View, Side View, Top View).
+   */
+  variations?:
+    | {
+        title: string;
+        description?: string | null;
+        prompt: string;
+        previewImage?: (number | null) | Media;
+        id?: string | null;
+      }[]
+    | null;
+  aiTool?:
+    | (
+        | 'midjourney'
+        | 'flux'
+        | 'stable-diffusion'
+        | 'runway-gen3'
+        | 'sora'
+        | 'kling'
+        | 'luma'
+        | 'veo-2'
+        | 'pika'
+        | 'gpt-image'
+        | 'ideogram'
+        | 'nano-banana'
+        | 'general'
+      )
+    | null;
+  model?: string | null;
+  aspectRatio?: ('1:1' | '4:5' | '16:9' | '9:16' | '3:2' | 'custom') | null;
+  style?:
+    | (
+        | 'photorealistic'
+        | 'cinematic'
+        | 'product-photography'
+        | 'editorial'
+        | 'anime'
+        | '3d'
+        | 'illustration'
+        | 'minimal'
+        | 'fashion'
+      )
+    | null;
+  useCase?:
+    | (
+        | 'product-photography'
+        | 'social-media'
+        | 'advertising'
+        | 'portrait'
+        | 'e-commerce'
+        | 'youtube-thumbnail'
+        | 'branding'
+        | 'concept-art'
+      )
+    | null;
+  /**
+   * Rendered video file (MP4, WebM) preview for the asset.
+   */
+  videoFile?: (number | null) | Media;
+  duration?: string | null;
+  fps?: ('24' | '30' | '60' | '120') | null;
+  motionStrength?: number | null;
+  cameraMovement?:
+    | (
+        | 'static'
+        | 'dynamic-tracking'
+        | 'pan'
+        | 'tilt'
+        | 'zoom-in'
+        | 'zoom-out'
+        | 'orbit'
+        | 'drone'
+        | 'crane'
+        | 'handheld'
+      )
+    | null;
+  /**
+   * Specific prompt or visual guidance to lock initial frame at 00:00.
+   */
+  firstFramePrompt?: string | null;
+  firstFrameImage?: (number | null) | Media;
+  /**
+   * Target ending frame prompt for beginning-to-end interpolation (Runway/Kling/Luma).
+   */
+  lastFramePrompt?: string | null;
+  lastFrameImage?: (number | null) | Media;
+  /**
+   * Sequenced scene-by-scene prompt chunks for complex multi-shot videos.
+   */
+  scenes?:
+    | {
+        sceneNumber?: number | null;
+        title: string;
+        timecode?: string | null;
+        shotType?: ('extreme-wide' | 'wide' | 'medium' | 'close-up' | 'extreme-close-up' | 'pov' | 'drone') | null;
+        cameraMotion?: string | null;
+        prompt: string;
+        audioCue?: string | null;
+        keyframeImage?: (number | null) | Media;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Semantic version for this context pack release (e.g. v1.0.0, v2.4.0)
+   */
+  version?: string | null;
+  /**
+   * Protocol URI for agent resolution (e.g. contextnode.pack://v2.4/nextjs-saas)
+   */
+  schemaUri?: string | null;
+  targetPersona?:
+    | (
+        | 'autonomous-agent'
+        | 'claude-code'
+        | 'senior-architect'
+        | 'ai-engineer'
+        | 'systems-engineer'
+        | 'founder'
+        | 'custom'
+      )
+    | null;
+  /**
+   * The master prompt injected at the root of the context window.
+   */
+  systemPrompt?: string | null;
+  /**
+   * Strict positive requirements and architectural constraints.
+   */
+  goldenRules?: string | null;
+  /**
+   * Guardrails, anti-patterns, and disallowed implementations.
+   */
+  negativeConstraints?: string | null;
+  validationGates?:
+    | {
+        gate: string;
+        enabled?: boolean | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Collection of files and folder rules packaged into this resource.
+   */
+  files?:
+    | {
+        path: string;
+        description?: string | null;
+        fileType?: ('markdown' | 'json' | 'typescript' | 'python' | 'rust' | 'sql' | 'yaml' | 'config') | null;
+        content: string;
+        id?: string | null;
+      }[]
+    | null;
+  supportedTools?: ('cursor' | 'windsurf' | 'claude-code' | 'copilot' | 'chatgpt' | 'ollama')[] | null;
+  /**
+   * Pre-packaged ZIP archive containing the complete directory structure and manifest.
+   */
+  zipBundle?: (number | null) | Media;
+  category?: (number | null) | Category;
+  categoryText?: string | null;
+  tags?: (number | Tag)[] | null;
+  tagList?:
+    | {
+        tag?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  seo?: {
+    /**
+     * Falls back to asset title if empty
+     */
+    title?: string | null;
+    /**
+     * Optimized search engine description under 160 characters
+     */
+    description?: string | null;
+    keywords?: string | null;
+    /**
+     * Falls back to cover preview image if not specified
+     */
+    ogImage?: (number | null) | Media;
+  };
+  accessType?: ('FREE' | 'PAID' | 'free' | 'paid') | null;
+  price?: number | null;
+  status?:
+    | (
+        | 'pending_review'
+        | 'published'
+        | 'draft'
+        | 'rejected'
+        | 'archived'
+        | 'PENDING_REVIEW'
+        | 'PUBLISHED'
+        | 'DRAFT'
+        | 'REJECTED'
+        | 'ARCHIVED'
+      )
+    | null;
+  featured?: boolean | null;
+  author?: (number | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
-  id: string;
+  id: number;
   key: string;
   data:
     | {
@@ -183,20 +478,32 @@ export interface PayloadKv {
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
-  id: string;
+  id: number;
   document?:
     | ({
         relationTo: 'users';
-        value: string | User;
+        value: number | User;
       } | null)
     | ({
         relationTo: 'media';
-        value: string | Media;
+        value: number | Media;
+      } | null)
+    | ({
+        relationTo: 'categories';
+        value: number | Category;
+      } | null)
+    | ({
+        relationTo: 'tags';
+        value: number | Tag;
+      } | null)
+    | ({
+        relationTo: 'ai-assets';
+        value: number | AiAsset;
       } | null);
   globalSlug?: string | null;
   user: {
     relationTo: 'users';
-    value: string | User;
+    value: number | User;
   };
   updatedAt: string;
   createdAt: string;
@@ -206,10 +513,10 @@ export interface PayloadLockedDocument {
  * via the `definition` "payload-preferences".
  */
 export interface PayloadPreference {
-  id: string;
+  id: number;
   user: {
     relationTo: 'users';
-    value: string | User;
+    value: number | User;
   };
   key?: string | null;
   value?:
@@ -229,7 +536,7 @@ export interface PayloadPreference {
  * via the `definition` "payload-migrations".
  */
 export interface PayloadMigration {
-  id: string;
+  id: number;
   name?: string | null;
   batch?: number | null;
   updatedAt: string;
@@ -240,6 +547,12 @@ export interface PayloadMigration {
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
+  name?: T;
+  role?: T;
+  status?: T;
+  plan?: T;
+  avatar?: T;
+  bio?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -247,6 +560,7 @@ export interface UsersSelect<T extends boolean = true> {
   resetPasswordExpiration?: T;
   salt?: T;
   hash?: T;
+  resetPasswordRequestedAt?: T;
   loginAttempts?: T;
   lockUntil?: T;
   sessions?:
@@ -263,6 +577,7 @@ export interface UsersSelect<T extends boolean = true> {
  */
 export interface MediaSelect<T extends boolean = true> {
   alt?: T;
+  uploadedBy?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
@@ -274,6 +589,130 @@ export interface MediaSelect<T extends boolean = true> {
   height?: T;
   focalX?: T;
   focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "categories_select".
+ */
+export interface CategoriesSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  description?: T;
+  icon?: T;
+  parent?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tags_select".
+ */
+export interface TagsSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ai-assets_select".
+ */
+export interface AiAssetsSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  shortDescription?: T;
+  fullDescription?: T;
+  assetType?: T;
+  promptType?: T;
+  coverImage?: T;
+  mainPrompt?: T;
+  negativePrompt?: T;
+  variations?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        prompt?: T;
+        previewImage?: T;
+        id?: T;
+      };
+  aiTool?: T;
+  model?: T;
+  aspectRatio?: T;
+  style?: T;
+  useCase?: T;
+  videoFile?: T;
+  duration?: T;
+  fps?: T;
+  motionStrength?: T;
+  cameraMovement?: T;
+  firstFramePrompt?: T;
+  firstFrameImage?: T;
+  lastFramePrompt?: T;
+  lastFrameImage?: T;
+  scenes?:
+    | T
+    | {
+        sceneNumber?: T;
+        title?: T;
+        timecode?: T;
+        shotType?: T;
+        cameraMotion?: T;
+        prompt?: T;
+        audioCue?: T;
+        keyframeImage?: T;
+        id?: T;
+      };
+  version?: T;
+  schemaUri?: T;
+  targetPersona?: T;
+  systemPrompt?: T;
+  goldenRules?: T;
+  negativeConstraints?: T;
+  validationGates?:
+    | T
+    | {
+        gate?: T;
+        enabled?: T;
+        id?: T;
+      };
+  files?:
+    | T
+    | {
+        path?: T;
+        description?: T;
+        fileType?: T;
+        content?: T;
+        id?: T;
+      };
+  supportedTools?: T;
+  zipBundle?: T;
+  category?: T;
+  categoryText?: T;
+  tags?: T;
+  tagList?:
+    | T
+    | {
+        tag?: T;
+        id?: T;
+      };
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        keywords?: T;
+        ogImage?: T;
+      };
+  accessType?: T;
+  price?: T;
+  status?: T;
+  featured?: T;
+  author?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

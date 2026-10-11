@@ -26,6 +26,40 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: path.resolve(dirname),
   },
+  async redirects() {
+    return [
+      {
+        source: '/admin/login',
+        destination: '/login',
+        permanent: false,
+      },
+      {
+        source: '/admin/dashboard',
+        destination: '/admin',
+        permanent: false,
+      },
+      {
+        source: '/admin/image-prompts',
+        destination: '/dashboard/image-prompts',
+        permanent: false,
+      },
+      {
+        source: '/admin/image-prompts/:path*',
+        destination: '/dashboard/image-prompts/:path*',
+        permanent: false,
+      },
+      {
+        source: '/admin/video-prompts',
+        destination: '/dashboard/video-prompts',
+        permanent: false,
+      },
+      {
+        source: '/admin/video-prompts/:path*',
+        destination: '/dashboard/video-prompts/:path*',
+        permanent: false,
+      },
+    ]
+  },
 }
 
 export default withPayload(nextConfig, { devBundleServerPackages: false })
