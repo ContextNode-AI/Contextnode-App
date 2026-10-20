@@ -1,14 +1,16 @@
 {
-  "name": "contextnode-client",
+  "name": "@contextnode/web",
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --webpack",
+    "dev": "next dev --webpack -p 3000",
     "build": "next build",
-    "start": "next start",
+    "start": "next start -p 3000",
     "lint": "eslint"
   },
   "dependencies": {
+    "@contextnode/types": "workspace:*",
+    "@contextnode/ui": "workspace:*",
     "clsx": "^2.1.1",
     "framer-motion": "^12.39.0",
     "lucide-react": "^1.16.0",

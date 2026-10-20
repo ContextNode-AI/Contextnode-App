@@ -19,7 +19,9 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@contextnode/types": ["../../packages/types/src/index.ts"],
+      "@contextnode/ui": ["../../packages/ui/src/index.ts"]
     }
   },
   "include": [

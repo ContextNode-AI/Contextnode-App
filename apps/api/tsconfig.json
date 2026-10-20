@@ -28,6 +28,9 @@
       ],
       "@payload-config": [
         "./src/payload.config.ts"
+      ],
+      "@contextnode/types": [
+        "../../packages/types/src/index.ts"
       ]
     },
     "target": "ES2022"

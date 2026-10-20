@@ -1,0 +1,27 @@
+{
+  "name": "contextnode-monorepo",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@10.33.0",
+  "scripts": {
+    "build": "turbo build",
+    "dev": "turbo dev",
+    "lint": "turbo lint",
+    "dev:web": "turbo dev --filter=@contextnode/web",
+    "dev:api": "turbo dev --filter=@contextnode/api",
+    "build:web": "turbo build --filter=@contextnode/web",
+    "build:api": "turbo build --filter=@contextnode/api"
+  },
+  "devDependencies": {
+    "prettier": "^3.4.2",
+    "turbo": "^2.11.9",
+    "typescript": "^5.7.3"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "sharp",
+      "esbuild",
+      "unrs-resolver"
+    ]
+  }
+}

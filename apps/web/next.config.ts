@@ -1,8 +1,9 @@
 import type { NextConfig } from "next";
 
-const API_BACKEND = process.env.API_BACKEND_URL || "http://localhost:3000";
+const API_BACKEND = process.env.API_BACKEND_URL || "http://localhost:3001";
 
 const nextConfig: NextConfig = {
+  transpilePackages: ["@contextnode/ui", "@contextnode/types"],
   images: {
     remotePatterns: [
       {
