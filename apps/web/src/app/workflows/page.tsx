@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 
 export default function WorkflowsPage() {
   return (
-    <main className="min-h-screen bg-[#050505]">
+    <main className="min-h-screen bg-[#05060A]">
       {/* 
         Section 1 — Hero 
       */}

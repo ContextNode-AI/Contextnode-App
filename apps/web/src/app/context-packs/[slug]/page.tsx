@@ -355,7 +355,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
 
   if (!pack) {
     return (
-      <div className="min-h-screen bg-[#050505] flex flex-col items-center justify-center text-center p-8">
+      <div className="min-h-screen bg-[#05060A] flex flex-col items-center justify-center text-center p-8">
         <h1 className="text-2xl font-bold text-white mb-2">Context Pack Not Found</h1>
         <p className="text-muted-foreground text-sm mb-6">The requested pack might have been removed or renamed.</p>
         <Link href="/context-packs" className="text-xs bg-white text-black font-semibold px-4 py-2 rounded-lg hover:bg-neutral-200 transition-colors">
@@ -388,11 +388,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
   };
 
   return (
-    <div className="min-h-screen bg-[#050505] pt-36 pb-24 relative overflow-hidden">
-      {/* Glowing backgrounds */}
-      <div className="absolute inset-0 grid-background opacity-20 pointer-events-none" />
-      <div className="absolute top-0 right-0 w-[600px] h-[400px] bg-red-500/5 rounded-full blur-[100px] pointer-events-none" />
-
+    <div className="min-h-screen bg-[#05060A] pt-8 pb-20 relative">
       <div className="container max-w-7xl mx-auto px-6 relative z-10">
         
         {/* Navigation Breadcrumb */}

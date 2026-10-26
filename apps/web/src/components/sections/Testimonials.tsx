@@ -74,22 +74,22 @@ const MarqueeRow = ({ items, direction }: { items: typeof TESTIMONIALS, directio
           {[...items, ...items].map((t, idx) => (
              <div 
                key={idx} 
-               className="w-[320px] md:w-[420px] flex-shrink-0 relative group p-8 rounded-3xl border border-white/5 bg-[#0B0B0F]/80 backdrop-blur-xl flex flex-col justify-between hover:border-white/10 transition-colors shadow-[0_0_30px_rgba(255,255,255,0.01)] hover:shadow-[0_0_30px_rgba(255,255,255,0.03)] h-[280px]"
+               className="w-[320px] md:w-[420px] flex-shrink-0 relative group p-8 rounded-3xl border border-[#25343F] bg-[#25343F]/60 backdrop-blur-xl flex flex-col justify-between hover:border-[#FE7F2D]/50 transition-colors shadow-lg h-[280px]"
              >
-                <div className="absolute inset-0 bg-gradient-to-b from-white/[0.03] to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-3xl pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-b from-white/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-3xl pointer-events-none" />
                 
                 <div className="relative z-10">
-                  <Quote className="w-8 h-8 text-white/10 mb-4 group-hover:text-blue-500/20 transition-colors" />
-                  <p className="text-sm md:text-[15px] text-muted-foreground/90 leading-relaxed mb-6 line-clamp-4">
+                  <Quote className="w-8 h-8 text-[#FE7F2D]/40 mb-4 group-hover:text-[#FE7F2D] transition-colors" />
+                  <p className="text-sm md:text-[15px] text-slate-300 leading-relaxed mb-6 line-clamp-4">
                     "{t.quote}"
                   </p>
                 </div>
                 
-                <div className="flex items-center gap-4 relative z-10 mt-auto pt-4 border-t border-white/5">
-                  <img src={t.image} alt={t.name} className="w-10 h-10 rounded-full object-cover border border-white/10" />
+                <div className="flex items-center gap-4 relative z-10 mt-auto pt-4 border-t border-[#25343F]">
+                  <img src={t.image} alt={t.name} className="w-10 h-10 rounded-full object-cover border border-[#25343F]" />
                   <div>
-                    <h4 className="text-sm font-semibold text-white/90">{t.name}</h4>
-                    <p className="text-[11px] uppercase tracking-wider text-muted-foreground">{t.role}</p>
+                    <h4 className="text-sm font-semibold text-white">{t.name}</h4>
+                    <p className="text-[11px] uppercase tracking-wider text-slate-400">{t.role}</p>
                   </div>
                 </div>
              </div>
@@ -101,7 +101,7 @@ const MarqueeRow = ({ items, direction }: { items: typeof TESTIMONIALS, directio
 
 export function Testimonials() {
   return (
-    <section className="relative py-24 bg-[#050505] overflow-hidden">
+    <section className="relative py-24 bg-[#05060A] overflow-hidden">
       <style dangerouslySetInnerHTML={{__html: `
         @keyframes marquee-left {
           from { transform: translateX(0); }
@@ -141,7 +141,7 @@ export function Testimonials() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="text-muted-foreground text-lg max-w-2xl"
+            className="text-slate-400 text-lg max-w-2xl"
           >
             See how elite creators and developers are standardizing their AI workflows with our pre-built assets.
           </motion.p>
@@ -151,8 +151,8 @@ export function Testimonials() {
       {/* Marquee Section (Full Bleed) */}
       <div className="relative w-full max-w-[100vw] overflow-hidden flex flex-col gap-6">
         {/* Fade Masks */}
-        <div className="absolute top-0 left-0 bottom-0 w-32 md:w-64 bg-gradient-to-r from-[#050505] to-transparent z-20 pointer-events-none" />
-        <div className="absolute top-0 right-0 bottom-0 w-32 md:w-64 bg-gradient-to-l from-[#050505] to-transparent z-20 pointer-events-none" />
+        <div className="absolute top-0 left-0 bottom-0 w-32 md:w-64 bg-gradient-to-r from-[#05060A] to-transparent z-20 pointer-events-none" />
+        <div className="absolute top-0 right-0 bottom-0 w-32 md:w-64 bg-gradient-to-l from-[#05060A] to-transparent z-20 pointer-events-none" />
         
         <MarqueeRow items={TESTIMONIALS.slice(0, 5)} direction="left" />
         <MarqueeRow items={TESTIMONIALS.slice(5, 10)} direction="right" />

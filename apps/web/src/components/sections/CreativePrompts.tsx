@@ -32,7 +32,7 @@ export function CreativePrompts() {
   const landingPrompts = prompts.slice(0, 10);
 
   return (
-    <section className="relative py-24 bg-[#050505]">
+    <section className="relative py-24 bg-[#05060A]">
       {/* Subtle grid background */}
       <div className="absolute inset-0 grid-background opacity-20 pointer-events-none" />
 
@@ -54,7 +54,7 @@ export function CreativePrompts() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="text-muted-foreground text-lg"
+            className="text-slate-400 text-lg"
           >
             Explore a curated collection of high-fidelity prompts for Midjourney, Veo, and other creative AI models.
           </motion.p>
@@ -69,7 +69,7 @@ export function CreativePrompts() {
               viewport={{ once: true }}
               transition={{ delay: 0.1 + (idx % 4) * 0.1 }}
               key={prompt.id}
-              className="break-inside-avoid relative group rounded-xl sm:rounded-2xl overflow-hidden cursor-pointer bg-white/5 border border-white/10"
+              className="break-inside-avoid relative group rounded-xl sm:rounded-2xl overflow-hidden cursor-pointer bg-[#25343F]/50 border border-[#25343F] hover:border-[#FE7F2D]/50 transition-colors"
             >
               <Link href={`/prompts/${prompt.slug}`} className="block relative w-full h-full">
                 {/* Image */}
@@ -81,24 +81,24 @@ export function CreativePrompts() {
                 />
                 
                 {/* Mobile Persistent Copy Count */}
-                <div className="md:hidden absolute bottom-2 right-2 flex items-center gap-1 bg-black/60 backdrop-blur-md px-2 py-1 rounded-md text-[10px] font-medium text-white border border-white/10 shadow-sm">
-                  <Copy className="w-3 h-3" />
+                <div className="md:hidden absolute bottom-2 right-2 flex items-center gap-1 bg-[#05060A]/90 backdrop-blur-md px-2 py-1 rounded-md text-[10px] font-medium text-[#FE7F2D] border border-[#25343F] shadow-sm">
+                  <Copy className="w-3 h-3 text-[#FE7F2D]" />
                   <span>{prompt.copies}</span>
                 </div>
                 
                 {/* Desktop Hover Overlay */}
-                <div className="hidden md:flex absolute inset-0 bg-gradient-to-b from-transparent via-black/20 to-black/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex-col justify-end p-5">
+                <div className="hidden md:flex absolute inset-0 bg-gradient-to-b from-transparent via-[#05060A]/40 to-[#05060A]/95 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex-col justify-end p-5">
                   <div className="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
                     <div className="flex items-center justify-between mb-2">
                       <h3 className="text-white font-semibold text-lg line-clamp-1 pr-2">
                         {prompt.title}
                       </h3>
-                      <ArrowUpRight className="w-5 h-5 text-white/70 group-hover:text-white transition-colors flex-shrink-0" />
+                      <ArrowUpRight className="w-5 h-5 text-[#FE7F2D] transition-transform group-hover:scale-110 flex-shrink-0" />
                     </div>
                     
                     <div className="flex items-center gap-2">
-                      <div className="flex items-center gap-1.5 bg-white/20 backdrop-blur-md px-2.5 py-1 rounded-full text-xs font-medium text-white shadow-sm border border-white/10">
-                        <Copy className="w-3.5 h-3.5" />
+                      <div className="flex items-center gap-1.5 bg-[#25343F] backdrop-blur-md px-2.5 py-1 rounded-full text-xs font-medium text-[#FE7F2D] shadow-sm border border-[#25343F]">
+                        <Copy className="w-3.5 h-3.5 text-[#FE7F2D]" />
                         <span>{prompt.copies} copies</span>
                       </div>
                     </div>

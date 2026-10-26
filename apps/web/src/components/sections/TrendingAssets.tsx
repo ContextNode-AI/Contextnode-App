@@ -63,7 +63,7 @@ const ASSETS = [
 
 export function TrendingAssets() {
   return (
-    <section className="relative py-24 bg-[#050505]">
+    <section className="relative py-24 bg-[#05060A]">
       {/* Subtle grid background for the whole section */}
       <div className="absolute inset-0 grid-background opacity-20 pointer-events-none" />
 
@@ -85,7 +85,7 @@ export function TrendingAssets() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
-              className="text-muted-foreground text-base max-w-2xl"
+              className="text-slate-400 text-base max-w-2xl"
             >
               Production-ready tech prompts, system architectures, and codebase boilerplates to accelerate your development.
             </motion.p>
@@ -95,7 +95,7 @@ export function TrendingAssets() {
             initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="text-sm font-medium text-white/70 hover:text-white transition-colors flex items-center gap-1.5 group"
+            className="text-sm font-semibold text-[#FE7F2D] hover:text-[#FE7F2D]/80 transition-colors flex items-center gap-1.5 group"
           >
             View all resources 
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -112,15 +112,15 @@ export function TrendingAssets() {
               transition={{ delay: idx * 0.1 }}
               key={asset.id} 
             >
-              <Link href={`/assets/${asset.id}`} className="group relative rounded-2xl border border-white/5 bg-[#0A0A0A] hover:bg-[#111111] transition-colors overflow-hidden flex flex-col h-[340px] cursor-pointer shadow-lg hover:shadow-2xl">
+              <Link href={`/assets/${asset.id}`} className="group relative rounded-2xl border border-[#25343F] bg-[#25343F]/60 hover:bg-[#25343F]/90 hover:border-[#FE7F2D]/50 transition-colors overflow-hidden flex flex-col h-[340px] cursor-pointer shadow-lg hover:shadow-2xl">
                 
                 {/* Content Area */}
                 <div className="p-6 flex-1 flex flex-col z-10">
                   <div className="flex justify-between items-start mb-3">
-                    <h3 className="text-xl font-semibold text-white group-hover:text-blue-400 transition-colors">{asset.title}</h3>
+                    <h3 className="text-xl font-semibold text-white group-hover:text-[#FE7F2D] transition-colors">{asset.title}</h3>
                   </div>
                   
-                  <p className="text-sm text-muted-foreground line-clamp-2 mb-6 leading-relaxed">
+                  <p className="text-sm text-slate-400 line-clamp-2 mb-6 leading-relaxed">
                     {asset.description}
                   </p>
                   
@@ -128,15 +128,15 @@ export function TrendingAssets() {
                     {/* Tech Chips */}
                     <div className="flex flex-wrap gap-2">
                       {asset.tags.map(tag => (
-                        <span key={tag} className="text-[10px] font-medium text-white/70 bg-white/5 border border-white/10 px-2.5 py-1 rounded-md">
+                        <span key={tag} className="text-[10px] font-medium text-slate-300 bg-[#05060A] border border-[#25343F] px-2.5 py-1 rounded-md">
                           {tag}
                         </span>
                       ))}
                     </div>
                     
                     {/* Downloads Count */}
-                    <div className="flex items-center gap-1.5 text-[11px] font-medium text-muted-foreground bg-white/5 px-2.5 py-1 rounded-md border border-white/5 whitespace-nowrap">
-                      <Download className="w-3.5 h-3.5" />
+                    <div className="flex items-center gap-1.5 text-[11px] font-medium text-slate-400 bg-[#05060A] px-2.5 py-1 rounded-md border border-[#25343F] whitespace-nowrap">
+                      <Download className="w-3.5 h-3.5 text-[#FE7F2D]" />
                       {asset.downloads} uses
                     </div>
                   </div>
@@ -144,12 +144,12 @@ export function TrendingAssets() {
                 
                 {/* Bottom Image Mockup (Vercel Style) */}
                 <div className="h-44 w-full px-6 translate-y-8 group-hover:translate-y-4 transition-transform duration-500 ease-out relative z-0">
-                  <div className="w-full h-full rounded-t-xl border-t border-l border-r border-white/10 overflow-hidden bg-black/80 shadow-[0_-10px_30px_rgba(0,0,0,0.3)] relative">
+                  <div className="w-full h-full rounded-t-xl border-t border-l border-r border-[#25343F] overflow-hidden bg-[#05060A] shadow-[0_-10px_30px_rgba(0,0,0,0.5)] relative">
                     {/* Fake Mac Window Header */}
-                    <div className="absolute top-0 left-0 right-0 h-6 bg-black/60 border-b border-white/10 flex items-center px-3 gap-1.5 z-20">
-                      <div className="w-2 h-2 rounded-full bg-red-500/80" />
-                      <div className="w-2 h-2 rounded-full bg-yellow-500/80" />
-                      <div className="w-2 h-2 rounded-full bg-green-500/80" />
+                    <div className="absolute top-0 left-0 right-0 h-6 bg-[#25343F]/80 border-b border-[#25343F] flex items-center px-3 gap-1.5 z-20">
+                      <div className="w-2 h-2 rounded-full bg-[#FE7F2D]" />
+                      <div className="w-2 h-2 rounded-full bg-slate-500" />
+                      <div className="w-2 h-2 rounded-full bg-[#25343F]" />
                     </div>
                     
                     {/* Mockup Image */}

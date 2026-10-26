@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, Code, Terminal, Sparkles, Filter, Paintbrush } from "lucide-react";
-import { Navbar } from "@/components/navbar/Navbar";
 import { Footer } from "@/components/footer/Footer";
 
 const MOCK_DATA = [
@@ -148,10 +147,8 @@ export default function SearchPage() {
   );
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#050505]">
-      <Navbar />
-
-      <main className="flex-1 relative pt-32 pb-24 px-6 overflow-hidden">
+    <div className="flex flex-col min-h-screen bg-[#05060A]">
+      <main className="flex-1 relative pt-8 pb-20 px-6 overflow-hidden">
         <div className="absolute inset-0 grid-background opacity-30 pointer-events-none" />
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-blue-500/10 blur-[120px] rounded-full pointer-events-none opacity-50" />
 

@@ -52,11 +52,11 @@ const WITH_CONTEXTNODE = [
 
 export function WhyContextNode() {
   return (
-    <section className="relative py-24 bg-[#050505] overflow-hidden">
+    <section className="relative py-24 bg-[#05060A] overflow-hidden">
       {/* Background Lighting */}
       <div className="absolute inset-0 grid-background opacity-20 pointer-events-none" />
-      <div className="absolute top-1/2 left-0 w-[500px] h-[500px] ambient-glow-red rounded-full blur-3xl opacity-10 pointer-events-none transform -translate-y-1/2" />
-      <div className="absolute top-1/2 right-0 w-[500px] h-[500px] ambient-glow-blue rounded-full blur-3xl opacity-10 pointer-events-none transform -translate-y-1/2" />
+      <div className="absolute top-1/2 left-0 w-[500px] h-[500px] ambient-glow-secondary rounded-full blur-3xl opacity-40 pointer-events-none transform -translate-y-1/2" />
+      <div className="absolute top-1/2 right-0 w-[500px] h-[500px] ambient-glow-accent rounded-full blur-3xl opacity-30 pointer-events-none transform -translate-y-1/2" />
 
       <div className="container max-w-5xl mx-auto px-6 relative z-10">
         
@@ -76,7 +76,7 @@ export function WhyContextNode() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="text-muted-foreground text-lg max-w-2xl"
+            className="text-slate-400 text-lg max-w-2xl"
           >
             Stop copy-pasting from scattered notes. Start building with structured, reusable systems.
           </motion.p>
@@ -91,22 +91,22 @@ export function WhyContextNode() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.2 }}
-            className="relative p-6 sm:p-8 rounded-3xl border border-red-900/30 bg-gradient-to-b from-red-950/20 to-black/40 backdrop-blur-sm"
+            className="relative p-6 sm:p-8 rounded-3xl border border-[#25343F] bg-[#25343F]/30 backdrop-blur-sm"
           >
             <div className="flex items-center gap-4 mb-8">
-              <div className="w-8 h-8 rounded-full bg-red-500/10 flex items-center justify-center border border-red-500/20">
-                <X className="w-4 h-4 text-red-500" />
+              <div className="w-8 h-8 rounded-full bg-red-500/10 flex items-center justify-center border border-red-500/30">
+                <X className="w-4 h-4 text-red-400" />
               </div>
               <h3 className="text-xl font-semibold text-white">Without structure</h3>
             </div>
 
             <div className="flex flex-col gap-4">
               {WITHOUT_STRUCTURE.map((item, idx) => (
-                <div key={idx} className="flex items-start gap-4 p-4 rounded-xl border border-white/5 bg-white/[0.02]">
-                  <item.icon className="w-5 h-5 text-red-400/70 mt-0.5 shrink-0" />
+                <div key={idx} className="flex items-start gap-4 p-4 rounded-xl border border-[#25343F] bg-[#05060A]/80">
+                  <item.icon className="w-5 h-5 text-red-400/80 mt-0.5 shrink-0" />
                   <div>
                     <h4 className="font-semibold text-white/90 text-sm mb-1">{item.title}</h4>
-                    <p className="text-xs text-muted-foreground leading-relaxed">{item.description}</p>
+                    <p className="text-xs text-slate-400 leading-relaxed">{item.description}</p>
                   </div>
                 </div>
               ))}
@@ -119,22 +119,22 @@ export function WhyContextNode() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.3 }}
-            className="relative p-6 sm:p-8 rounded-3xl border border-blue-900/30 bg-gradient-to-b from-blue-900/20 via-purple-900/10 to-black/40 backdrop-blur-sm shadow-[0_0_50px_rgba(59,130,246,0.05)]"
+            className="relative p-6 sm:p-8 rounded-3xl border border-[#FE7F2D]/40 bg-[#25343F]/60 backdrop-blur-sm shadow-xl"
           >
             <div className="flex items-center gap-4 mb-8">
-              <div className="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center border border-blue-500/30">
-                <Check className="w-4 h-4 text-blue-400" />
+              <div className="w-8 h-8 rounded-full bg-[#FE7F2D]/20 flex items-center justify-center border border-[#FE7F2D]/40">
+                <Check className="w-4 h-4 text-[#FE7F2D] stroke-[3]" />
               </div>
               <h3 className="text-xl font-semibold text-white">With ContextNode</h3>
             </div>
 
             <div className="flex flex-col gap-4">
               {WITH_CONTEXTNODE.map((item, idx) => (
-                <div key={idx} className="flex items-start gap-4 p-4 rounded-xl border border-white/5 bg-white/[0.02] hover:bg-white/[0.04] transition-colors">
-                  <item.icon className="w-5 h-5 text-blue-400 mt-0.5 shrink-0" />
+                <div key={idx} className="flex items-start gap-4 p-4 rounded-xl border border-[#25343F] bg-[#05060A]/80 hover:border-[#FE7F2D]/50 transition-colors">
+                  <item.icon className="w-5 h-5 text-[#FE7F2D] mt-0.5 shrink-0" />
                   <div>
-                    <h4 className="font-semibold text-white/90 text-sm mb-1">{item.title}</h4>
-                    <p className="text-xs text-muted-foreground leading-relaxed">{item.description}</p>
+                    <h4 className="font-semibold text-white text-sm mb-1">{item.title}</h4>
+                    <p className="text-xs text-slate-400 leading-relaxed">{item.description}</p>
                   </div>
                 </div>
               ))}

@@ -141,7 +141,7 @@ export default function PromptDetailPage({ params }: { params: Promise<{ slug: s
 
   if (loading && !prompt) {
     return (
-      <div className="min-h-screen bg-[#050505] pt-32 pb-24 relative overflow-hidden text-white flex items-center justify-center">
+      <div className="min-h-screen bg-[#05060A] pt-8 pb-20 relative overflow-hidden text-white flex items-center justify-center">
         <div className="w-8 h-8 rounded-full border-2 border-white/20 border-t-white animate-spin" />
       </div>
     );
@@ -197,7 +197,7 @@ export default function PromptDetailPage({ params }: { params: Promise<{ slug: s
   };
 
   return (
-    <div className="min-h-screen bg-[#050505] pt-32 pb-24 relative overflow-hidden text-white">
+    <div className="min-h-screen bg-[#05060A] pt-8 pb-20 relative overflow-hidden text-white">
       {/* Background decoration */}
       <div className="absolute inset-0 grid-background opacity-20 pointer-events-none" />
       <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-blue-500/5 rounded-full blur-[120px] pointer-events-none" />

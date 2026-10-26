@@ -60,7 +60,7 @@ export default function PromptsPage() {
   });
 
   return (
-    <div className="min-h-screen bg-[#050505] pt-32 pb-24 relative overflow-hidden">
+    <div className="min-h-screen bg-[#05060A] pt-8 pb-20 relative overflow-hidden">
       {/* Background elements */}
       <div className="absolute inset-0 grid-background opacity-20 pointer-events-none" />
       <div className="absolute top-0 right-0 w-[800px] h-[600px] bg-blue-500/5 rounded-full blur-[120px] pointer-events-none" />

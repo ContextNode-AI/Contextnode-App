@@ -15,22 +15,25 @@ const GithubIcon = (props: any) => (
 
 export function Footer() {
   return (
-    <footer className="bg-[#050505] border-t border-white/5 pt-20 pb-10">
+    <footer className="bg-[#05060A] border-t border-[#25343F] pt-20 pb-10">
       <div className="container max-w-6xl mx-auto px-6">
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-10 mb-16">
           
           <div className="col-span-2 lg:col-span-2">
             <Link href="/" className="text-xl font-bold text-white tracking-tight flex items-center gap-2 mb-4">
                ContextNode
+               <span className="text-[10px] font-semibold text-[#FE7F2D] bg-[#FE7F2D]/15 border border-[#FE7F2D]/30 px-1.5 py-0.2 rounded-full">
+                 AI
+               </span>
             </Link>
-            <p className="text-sm text-muted-foreground max-w-sm leading-relaxed mb-6">
+            <p className="text-sm text-slate-400 max-w-sm leading-relaxed mb-6">
               The premier ecosystem for structured AI assets, context packs, and engineering workflows. Build faster with systemized AI.
             </p>
-            <div className="flex items-center gap-4 text-muted-foreground">
-               <a href="#" className="hover:text-white transition-colors" aria-label="Twitter/X">
+            <div className="flex items-center gap-4 text-slate-400">
+               <a href="#" className="hover:text-[#FE7F2D] transition-colors" aria-label="Twitter/X">
                  <XIcon className="w-4 h-4" />
                </a>
-               <a href="#" className="hover:text-white transition-colors" aria-label="GitHub">
+               <a href="#" className="hover:text-[#FE7F2D] transition-colors" aria-label="GitHub">
                  <GithubIcon className="w-5 h-5" />
                </a>
             </div>
@@ -38,41 +41,41 @@ export function Footer() {
           
           <div>
             <h4 className="text-white font-semibold mb-4 text-sm tracking-wider uppercase">Assets</h4>
-            <ul className="space-y-3 text-sm text-muted-foreground">
-              <li><Link href="#" className="hover:text-white transition-colors">Context Packs</Link></li>
-              <li><Link href="#" className="hover:text-white transition-colors">Prompts</Link></li>
-              <li><Link href="#" className="hover:text-white transition-colors">Workflows</Link></li>
-              <li><Link href="#" className="hover:text-white transition-colors">Agents</Link></li>
+            <ul className="space-y-3 text-sm text-slate-400">
+              <li><Link href="/context-packs" className="hover:text-[#FE7F2D] transition-colors">Context Packs</Link></li>
+              <li><Link href="/prompts" className="hover:text-[#FE7F2D] transition-colors">Prompts</Link></li>
+              <li><Link href="/workflows" className="hover:text-[#FE7F2D] transition-colors">Workflows</Link></li>
+              <li><Link href="/search" className="hover:text-[#FE7F2D] transition-colors">Agents</Link></li>
             </ul>
           </div>
 
           <div>
             <h4 className="text-white font-semibold mb-4 text-sm tracking-wider uppercase">Resources</h4>
-            <ul className="space-y-3 text-sm text-muted-foreground">
-              <li><Link href="#" className="hover:text-white transition-colors">Documentation</Link></li>
-              <li><Link href="#" className="hover:text-white transition-colors">Blog</Link></li>
-              <li><Link href="#" className="hover:text-white transition-colors">Changelog</Link></li>
-              <li><Link href="#" className="hover:text-white transition-colors">Community</Link></li>
+            <ul className="space-y-3 text-sm text-slate-400">
+              <li><Link href="#" className="hover:text-[#FE7F2D] transition-colors">Documentation</Link></li>
+              <li><Link href="#" className="hover:text-[#FE7F2D] transition-colors">Blog</Link></li>
+              <li><Link href="#" className="hover:text-[#FE7F2D] transition-colors">Changelog</Link></li>
+              <li><Link href="#" className="hover:text-[#FE7F2D] transition-colors">Community</Link></li>
             </ul>
           </div>
 
           <div>
             <h4 className="text-white font-semibold mb-4 text-sm tracking-wider uppercase">Company</h4>
-            <ul className="space-y-3 text-sm text-muted-foreground">
-              <li><Link href="#" className="hover:text-white transition-colors">About</Link></li>
-              <li><Link href="#" className="hover:text-white transition-colors">Pricing</Link></li>
-              <li><Link href="#" className="hover:text-white transition-colors">Terms of Service</Link></li>
-              <li><Link href="#" className="hover:text-white transition-colors">Privacy Policy</Link></li>
+            <ul className="space-y-3 text-sm text-slate-400">
+              <li><Link href="#" className="hover:text-[#FE7F2D] transition-colors">About</Link></li>
+              <li><Link href="#" className="hover:text-[#FE7F2D] transition-colors">Pricing</Link></li>
+              <li><Link href="#" className="hover:text-[#FE7F2D] transition-colors">Terms of Service</Link></li>
+              <li><Link href="#" className="hover:text-[#FE7F2D] transition-colors">Privacy Policy</Link></li>
             </ul>
           </div>
 
         </div>
 
-        <div className="flex flex-col md:flex-row items-center justify-between pt-8 border-t border-white/5 text-sm text-muted-foreground">
+        <div className="flex flex-col md:flex-row items-center justify-between pt-8 border-t border-[#25343F] text-sm text-slate-400">
           <p>© 2026 ContextNode. All rights reserved.</p>
           <div className="flex items-center gap-6 mt-4 md:mt-0">
              <span className="flex items-center gap-2">
-               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+               <span className="w-2 h-2 rounded-full bg-[#FE7F2D] animate-pulse" />
                All systems operational
              </span>
           </div>

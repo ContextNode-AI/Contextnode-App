@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { Navbar } from "@/components/navbar/Navbar";
+import { AppShell } from "@/components/layout/AppShell";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ContextNode - Discover AI Assets",
-  description: "Explore prompts, workflows, and production-grade Context Packs for creators and developers.",
+  title: "ContextNode - The Context Behind Better AI Development",
+  description: "Discover, reuse, and publish AI prompts, context packs, and repeatable workflows for developers.",
   icons: {
     icon: "/contextnode-logo.png",
   },
@@ -29,16 +29,15 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased dark`}
+      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body 
-        className="min-h-full flex flex-col relative selection:bg-white/20 selection:text-white"
+        className="h-full overflow-hidden bg-[#05060A] text-white selection:bg-[#FE7F2D]/30 selection:text-white"
         suppressHydrationWarning
       >
-        <Navbar />
-        <main className="flex-1 flex flex-col">
+        <AppShell>
           {children}
-        </main>
+        </AppShell>
       </body>
     </html>
   );

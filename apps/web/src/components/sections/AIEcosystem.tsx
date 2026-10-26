@@ -32,20 +32,20 @@ const STACK = [
 
 export function AIEcosystem() {
   return (
-    <section className="relative pt-24 pb-12 bg-[#050505] overflow-hidden">
+    <section className="relative pt-24 pb-12 bg-[#05060A] overflow-hidden">
       {/* Background Grid */}
       <div className="absolute inset-0 grid-background opacity-20 pointer-events-none" />
       
       {/* Subtle Glows */}
-      <div className="absolute left-0 top-1/2 -translate-y-1/2 w-32 h-32 bg-white/5 blur-[50px] pointer-events-none" />
-      <div className="absolute right-0 top-1/2 -translate-y-1/2 w-32 h-32 bg-white/5 blur-[50px] pointer-events-none" />
+      <div className="absolute left-0 top-1/2 -translate-y-1/2 w-32 h-32 bg-[#25343F]/30 blur-[50px] pointer-events-none" />
+      <div className="absolute right-0 top-1/2 -translate-y-1/2 w-32 h-32 bg-[#25343F]/30 blur-[50px] pointer-events-none" />
 
       <div className="container max-w-5xl mx-auto px-6 relative z-10">
         <motion.p 
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          className="text-center text-xs font-bold tracking-[0.2em] uppercase text-muted-foreground/70 mb-10"
+          className="text-center text-xs font-bold tracking-[0.2em] uppercase text-slate-400 mb-10"
         >
           Works with your favorite AI stack
         </motion.p>
@@ -60,11 +60,11 @@ export function AIEcosystem() {
               transition={{ delay: idx * 0.1, ease: "easeOut" }}
               className="group flex flex-col items-center justify-center cursor-pointer relative"
             >
-              <item.icon className="w-8 h-8 md:w-10 md:h-10 text-white/30 group-hover:text-white transition-all duration-500 group-hover:scale-110 group-hover:drop-shadow-[0_0_15px_rgba(255,255,255,0.4)]" />
+              <item.icon className="w-8 h-8 md:w-10 md:h-10 text-slate-400 group-hover:text-[#FE7F2D] transition-all duration-300 group-hover:scale-110" />
               
               {/* Tooltip on hover */}
               <div className="absolute -bottom-8 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-                <span className="text-[10px] font-medium tracking-wider text-white/60 uppercase whitespace-nowrap">
+                <span className="text-[10px] font-semibold tracking-wider text-slate-200 bg-[#25343F] px-2 py-0.5 rounded border border-[#25343F] uppercase whitespace-nowrap">
                   {item.name}
                 </span>
               </div>
