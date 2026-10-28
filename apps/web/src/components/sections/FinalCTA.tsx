@@ -14,7 +14,7 @@ export function FinalCTA() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.8, ease: "easeOut" }}
-        className="relative w-full max-w-5xl rounded-[2rem] sm:rounded-[3rem] border border-[#25343F] bg-[#25343F]/80 backdrop-blur-2xl p-8 sm:p-12 md:p-24 text-center overflow-hidden shadow-2xl"
+        className="relative w-full max-w-6xl rounded-[2rem] sm:rounded-[3rem] border border-[#25343F] bg-[#25343F]/80 backdrop-blur-2xl p-8 sm:p-12 md:p-24 text-center overflow-hidden shadow-2xl"
       >
         {/* Glow Effects inside the card */}
         <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-[#FE7F2D]/10 via-transparent to-[#25343F]/30 pointer-events-none" />

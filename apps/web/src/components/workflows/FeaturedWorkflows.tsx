@@ -61,7 +61,7 @@ const FEATURED_WORKFLOWS = [
 export function FeaturedWorkflows() {
   return (
     <section className="py-24 relative">
-      <div className="container mx-auto px-4 max-w-6xl">
+      <div className="w-full px-4 sm:px-6">
         <div className="flex flex-col md:flex-row items-end justify-between mb-12">
           <div>
             <h2 className="text-3xl font-bold text-white mb-3">Featured Workflows</h2>

@@ -148,11 +148,11 @@ export default function SearchPage() {
 
   return (
     <div className="flex flex-col min-h-screen bg-[#05060A]">
-      <main className="flex-1 relative pt-8 pb-20 px-6 overflow-hidden">
+      <main className="flex-1 relative pt-8 pb-20 px-4 sm:px-6 overflow-hidden">
         <div className="absolute inset-0 grid-background opacity-30 pointer-events-none" />
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-blue-500/10 blur-[120px] rounded-full pointer-events-none opacity-50" />
 
-        <div className="container max-w-5xl mx-auto relative z-10">
+        <div className="w-full relative z-10">
           
           <div className="mb-12 text-center">
             <h1 className="text-4xl md:text-5xl font-extrabold text-white tracking-tight mb-4">

@@ -37,7 +37,7 @@ export function ContextPackShowcase() {
       {/* Subtle grid background */}
       <div className="absolute inset-0 grid-background opacity-20 pointer-events-none" />
 
-      <div className="container max-w-6xl mx-auto px-6 relative z-10">
+      <div className="w-full px-4 sm:px-6 relative z-10">
         
         {/* Header Section */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-6">

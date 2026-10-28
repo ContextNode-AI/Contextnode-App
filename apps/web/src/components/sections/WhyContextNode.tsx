@@ -58,7 +58,7 @@ export function WhyContextNode() {
       <div className="absolute top-1/2 left-0 w-[500px] h-[500px] ambient-glow-secondary rounded-full blur-3xl opacity-40 pointer-events-none transform -translate-y-1/2" />
       <div className="absolute top-1/2 right-0 w-[500px] h-[500px] ambient-glow-accent rounded-full blur-3xl opacity-30 pointer-events-none transform -translate-y-1/2" />
 
-      <div className="container max-w-5xl mx-auto px-6 relative z-10">
+      <div className="w-full px-4 sm:px-6 relative z-10">
         
         {/* Header */}
         <div className="flex flex-col items-center mb-16 text-center">

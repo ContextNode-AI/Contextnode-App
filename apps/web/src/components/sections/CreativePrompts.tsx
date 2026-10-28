@@ -2,10 +2,117 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Copy, ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { PROMPTS, type Prompt } from "@/lib/data";
 import { getPublishedPrompts } from "@/lib/promptsApi";
+import {
+  ScrollVelocityContainer,
+  ScrollVelocityRow,
+} from "@/registry/magicui/scroll-based-velocity";
+import { InkBackground } from "@/components/kokonutui/ink-background";
+
+const FALLBACK_ROW_A: Partial<Prompt>[] = [
+  {
+    title: "Ethereal Portraiture",
+    category: "Photography",
+    copies: "8.9k",
+    slug: "ethereal-portraiture",
+    image:
+      "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=800&auto=format",
+  },
+  {
+    title: "Cyberpunk Street Level",
+    category: "Cyberpunk",
+    copies: "3.2k",
+    slug: "cyberpunk-street-level",
+    image:
+      "https://images.unsplash.com/photo-1555680202-c86f0e12f086?q=80&w=800&auto=format",
+  },
+  {
+    title: "Futuristic Architecture",
+    category: "Architecture",
+    copies: "4.7k",
+    slug: "ethereal-portraiture",
+    image:
+      "https://images.unsplash.com/photo-1749738456487-2af715ab65ea?q=80&w=2340&auto=format&fit=crop",
+  },
+  {
+    title: "Ghibli-esque Floating Worlds",
+    category: "Illustration",
+    copies: "5.1k",
+    slug: "ghibli-esque-floating-worlds",
+    image:
+      "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=800&auto=format",
+  },
+  {
+    title: "Dark Studio Product Macro",
+    category: "Photography",
+    copies: "2.8k",
+    slug: "dark-studio-product-macro",
+    image:
+      "https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=800&auto=format",
+  },
+  {
+    title: "Holographic Neural Lattice",
+    category: "3D Render",
+    copies: "6.2k",
+    slug: "dark-studio-product-macro",
+    image:
+      "https://plus.unsplash.com/premium_photo-1720139288219-e20aa9c8895b?q=80&w=1810&auto=format&fit=crop",
+  },
+];
+
+const FALLBACK_ROW_B: Partial<Prompt>[] = [
+  {
+    title: "Neo-Tokyo Cinematic Stills",
+    category: "Cinematic",
+    copies: "7.4k",
+    slug: "cyberpunk-street-level",
+    image:
+      "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?q=80&w=800&auto=format",
+  },
+  {
+    title: "Abstract Geometric Geometry",
+    category: "Minimalist",
+    copies: "3.9k",
+    slug: "ghibli-esque-floating-worlds",
+    image:
+      "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=800&auto=format",
+  },
+  {
+    title: "Bioluminescent Deep Sea",
+    category: "3D Render",
+    copies: "4.3k",
+    slug: "ethereal-portraiture",
+    image:
+      "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=800&auto=format",
+  },
+  {
+    title: "Hyper-Detailed Mecha Concept",
+    category: "Cyberpunk",
+    copies: "5.8k",
+    slug: "cyberpunk-street-level",
+    image:
+      "https://images.unsplash.com/photo-1749738456487-2af715ab65ea?q=80&w=2340&auto=format&fit=crop",
+  },
+  {
+    title: "Nordic Minimalist Interior",
+    category: "Architecture",
+    copies: "2.1k",
+    slug: "dark-studio-product-macro",
+    image:
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=800&auto=format",
+  },
+  {
+    title: "Surreal Desert Mirage",
+    category: "Illustration",
+    copies: "3.5k",
+    slug: "ghibli-esque-floating-worlds",
+    image:
+      "https://plus.unsplash.com/premium_photo-1720139288219-e20aa9c8895b?q=80&w=1810&auto=format&fit=crop",
+  },
+];
 
 export function CreativePrompts() {
   const [prompts, setPrompts] = useState<Prompt[]>(PROMPTS);
@@ -28,87 +135,149 @@ export function CreativePrompts() {
     };
   }, []);
 
-  // Showcase only first 10 on landing page
-  const landingPrompts = prompts.slice(0, 10);
+  // Split prompts into two balanced rows
+  const half = Math.ceil(prompts.length / 2);
+  const rowA =
+    prompts.length >= 6
+      ? prompts.slice(0, half)
+      : [...prompts.slice(0, half), ...FALLBACK_ROW_A].slice(0, 6);
+  const rowB =
+    prompts.length >= 6
+      ? prompts.slice(half)
+      : [...prompts.slice(half), ...FALLBACK_ROW_B].slice(0, 6);
 
   return (
-    <section className="relative py-24 bg-[#05060A]">
+    <section className="relative py-20 bg-[#05060A] overflow-hidden">
       {/* Subtle grid background */}
       <div className="absolute inset-0 grid-background opacity-20 pointer-events-none" />
 
-      <div className="container max-w-7xl mx-auto px-6 relative z-10">
+      {/* Kokonut UI Ink Background Headline Area */}
+      <div className="w-full relative z-10 mb-4 px-4 sm:px-6">
+        <div className="relative w-full rounded-2xl overflow-hidden border border-[#25343F]/40 bg-[#05060A]">
+          <InkBackground
+            text="Creative Ready to use Prompts"
+            accent="#FE7F2D"
+            className="min-h-[170px] sm:min-h-[200px] md:min-h-[220px] bg-transparent"
+          />
 
-        {/* Header Section */}
-        <div className="flex flex-col items-center text-center mb-16 max-w-3xl mx-auto">
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-3xl md:text-5xl font-bold tracking-tight text-white mb-6 leading-tight"
-          >
-            Creative Ready to use Prompts
-          </motion.h2>
-
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-            className="text-slate-400 text-lg"
-          >
-            Explore a curated collection of high-fidelity prompts for Midjourney, Veo, and other creative AI models.
-          </motion.p>
-        </div>
-
-        {/* Masonry Layout Grid */}
-        <div className="columns-2 md:columns-3 lg:columns-4 gap-3 space-y-3 sm:gap-4 sm:space-y-4">
-          {landingPrompts.map((prompt, idx) => (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.1 + (idx % 4) * 0.1 }}
-              key={prompt.id}
-              className="break-inside-avoid relative group rounded-xl sm:rounded-2xl overflow-hidden cursor-pointer bg-[#25343F]/50 border border-[#25343F] hover:border-[#FE7F2D]/50 transition-colors"
+          {/* Right Side Down Prompt Page Link Button */}
+          <div className="absolute bottom-3 right-3 sm:bottom-4 sm:right-6 z-20 pointer-events-auto">
+            <Link
+              href="/prompts"
+              className="inline-flex items-center gap-2 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl bg-[#05060A]/85 backdrop-blur-md border border-[#25343F] text-xs sm:text-sm font-medium text-slate-200 hover:text-white hover:border-[#FE7F2D]/60 hover:bg-[#25343F]/80 transition-all group shadow-xl"
             >
-              <Link href={`/prompts/${prompt.slug}`} className="block relative w-full h-full">
-                {/* Image */}
-                <img
-                  src={prompt.image}
-                  alt={prompt.title}
-                  className="w-full h-auto object-cover transition-transform duration-700 md:group-hover:scale-105"
-                  loading="lazy"
-                />
-                
-                {/* Mobile Persistent Copy Count */}
-                <div className="md:hidden absolute bottom-2 right-2 flex items-center gap-1 bg-[#05060A]/90 backdrop-blur-md px-2 py-1 rounded-md text-[10px] font-medium text-[#FE7F2D] border border-[#25343F] shadow-sm">
-                  <Copy className="w-3 h-3 text-[#FE7F2D]" />
-                  <span>{prompt.copies}</span>
-                </div>
-                
-                {/* Desktop Hover Overlay */}
-                <div className="hidden md:flex absolute inset-0 bg-gradient-to-b from-transparent via-[#05060A]/40 to-[#05060A]/95 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex-col justify-end p-5">
-                  <div className="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-                    <div className="flex items-center justify-between mb-2">
-                      <h3 className="text-white font-semibold text-lg line-clamp-1 pr-2">
-                        {prompt.title}
+              <span>Explore All Prompts</span>
+              <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#FE7F2D] transition-transform group-hover:translate-x-1" />
+            </Link>
+          </div>
+        </div>
+      </div>
+
+      {/* Scroll-Based Velocity Marquee Rows */}
+      <div className="relative w-full overflow-hidden py-4">
+        <ScrollVelocityContainer className="w-full space-y-4 sm:space-y-6">
+          {/* Row A: Moving Left-to-Right */}
+          <ScrollVelocityRow baseVelocity={6} direction={1} className="py-1">
+            {rowA.map((item, idx) => (
+              <div
+                key={`rowA-${item.slug || item.id || idx}-${idx}`}
+                className="mx-2.5 sm:mx-3.5 inline-block group relative w-60 sm:w-72 md:w-80 h-40 sm:h-48 md:h-52 rounded-2xl overflow-hidden border border-[#25343F] bg-[#05060A] hover:border-[#FE7F2D]/60 transition-all duration-300 shadow-lg shrink-0 cursor-pointer select-none"
+              >
+                <Link
+                  href={`/prompts/${item.slug || "ethereal-portraiture"}`}
+                  className="block w-full h-full relative"
+                >
+                  <img
+                    src={`${item.image}&ixlib=rb-4.0.3`}
+                    alt={item.title || "Creative Prompt"}
+                    width={320}
+                    height={208}
+                    loading="lazy"
+                    decoding="async"
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+
+                  {/* Gradient overlay for text readability */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#05060A]/90 via-[#05060A]/30 to-transparent opacity-90 group-hover:opacity-95 transition-opacity" />
+
+                  {/* Category Pill */}
+                  <div className="absolute top-3 left-3 flex items-center gap-1.5 bg-[#05060A]/85 backdrop-blur-md px-2.5 py-1 rounded-full text-[10px] font-medium text-slate-300 border border-[#25343F]">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#FE7F2D]" />
+                    {item.category || "Prompt"}
+                  </div>
+
+                  {/* Bottom Metadata */}
+                  <div className="absolute bottom-3 inset-x-3 flex items-center justify-between">
+                    <div className="min-w-0 pr-2">
+                      <h3 className="text-white font-semibold text-sm sm:text-base truncate group-hover:text-[#FE7F2D] transition-colors">
+                        {item.title}
                       </h3>
-                      <ArrowUpRight className="w-5 h-5 text-[#FE7F2D] transition-transform group-hover:scale-110 flex-shrink-0" />
+                      <span className="text-xs text-slate-400">
+                        {item.copies || "2.5k"} copies
+                      </span>
                     </div>
-                    
-                    <div className="flex items-center gap-2">
-                      <div className="flex items-center gap-1.5 bg-[#25343F] backdrop-blur-md px-2.5 py-1 rounded-full text-xs font-medium text-[#FE7F2D] shadow-sm border border-[#25343F]">
-                        <Copy className="w-3.5 h-3.5 text-[#FE7F2D]" />
-                        <span>{prompt.copies} copies</span>
-                      </div>
+                    <div className="w-7 h-7 rounded-full bg-[#05060A]/90 border border-[#25343F] flex items-center justify-center text-slate-300 group-hover:text-white group-hover:border-[#FE7F2D]/60 transition-colors shrink-0">
+                      <ArrowUpRight className="w-3.5 h-3.5" />
                     </div>
                   </div>
-                </div>
-              </Link>
-            </motion.div>
-          ))}
-        </div>
-        
+                </Link>
+              </div>
+            ))}
+          </ScrollVelocityRow>
+
+          {/* Row B: Moving Right-to-Left (Opposite Direction) */}
+          <ScrollVelocityRow baseVelocity={6} direction={-1} className="py-1">
+            {rowB.map((item, idx) => (
+              <div
+                key={`rowB-${item.slug || item.id || idx}-${idx}`}
+                className="mx-2.5 sm:mx-3.5 inline-block group relative w-60 sm:w-72 md:w-80 h-40 sm:h-48 md:h-52 rounded-2xl overflow-hidden border border-[#25343F] bg-[#05060A] hover:border-[#FE7F2D]/60 transition-all duration-300 shadow-lg shrink-0 cursor-pointer select-none"
+              >
+                <Link
+                  href={`/prompts/${item.slug || "ethereal-portraiture"}`}
+                  className="block w-full h-full relative"
+                >
+                  <img
+                    src={`${item.image}&ixlib=rb-4.0.3`}
+                    alt={item.title || "Creative Prompt"}
+                    width={320}
+                    height={208}
+                    loading="lazy"
+                    decoding="async"
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+
+                  {/* Gradient overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#05060A]/90 via-[#05060A]/30 to-transparent opacity-90 group-hover:opacity-95 transition-opacity" />
+
+                  {/* Category Pill */}
+                  <div className="absolute top-3 left-3 flex items-center gap-1.5 bg-[#05060A]/85 backdrop-blur-md px-2.5 py-1 rounded-full text-[10px] font-medium text-slate-300 border border-[#25343F]">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#FE7F2D]" />
+                    {item.category || "Prompt"}
+                  </div>
+
+                  {/* Bottom Metadata */}
+                  <div className="absolute bottom-3 inset-x-3 flex items-center justify-between">
+                    <div className="min-w-0 pr-2">
+                      <h3 className="text-white font-semibold text-sm sm:text-base truncate group-hover:text-[#FE7F2D] transition-colors">
+                        {item.title}
+                      </h3>
+                      <span className="text-xs text-slate-400">
+                        {item.copies || "3.8k"} copies
+                      </span>
+                    </div>
+                    <div className="w-7 h-7 rounded-full bg-[#05060A]/90 border border-[#25343F] flex items-center justify-center text-slate-300 group-hover:text-white group-hover:border-[#FE7F2D]/60 transition-colors shrink-0">
+                      <ArrowUpRight className="w-3.5 h-3.5" />
+                    </div>
+                  </div>
+                </Link>
+              </div>
+            ))}
+          </ScrollVelocityRow>
+        </ScrollVelocityContainer>
+
+        {/* Ambient Fade Masks into #05060A */}
+        <div className="pointer-events-none absolute inset-y-0 left-0 w-20 sm:w-44 bg-gradient-to-r from-[#05060A] to-transparent z-20" />
+        <div className="pointer-events-none absolute inset-y-0 right-0 w-20 sm:w-44 bg-gradient-to-l from-[#05060A] to-transparent z-20" />
       </div>
     </section>
   );

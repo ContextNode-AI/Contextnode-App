@@ -306,7 +306,7 @@ export default function ContextPacksPage() {
       <div className="absolute top-0 right-0 w-[800px] h-[600px] bg-red-500/5 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute bottom-0 left-0 w-[800px] h-[600px] bg-blue-500/5 rounded-full blur-[120px] pointer-events-none" />
 
-      <div className="container max-w-7xl mx-auto px-6 relative z-10">
+      <div className="w-full px-4 sm:px-6 relative z-10">
         
         {/* Header Section with Tab Switcher */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8 border-b border-white/5 pb-5">

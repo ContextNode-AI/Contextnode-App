@@ -40,7 +40,7 @@ export function AIEcosystem() {
       <div className="absolute left-0 top-1/2 -translate-y-1/2 w-32 h-32 bg-[#25343F]/30 blur-[50px] pointer-events-none" />
       <div className="absolute right-0 top-1/2 -translate-y-1/2 w-32 h-32 bg-[#25343F]/30 blur-[50px] pointer-events-none" />
 
-      <div className="container max-w-5xl mx-auto px-6 relative z-10">
+      <div className="w-full px-4 sm:px-6 relative z-10">
         <motion.p 
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}

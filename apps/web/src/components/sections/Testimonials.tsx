@@ -125,7 +125,7 @@ export function Testimonials() {
       {/* Background Grid */}
       <div className="absolute inset-0 grid-background opacity-20 pointer-events-none" />
 
-      <div className="container max-w-7xl mx-auto px-6 relative z-10">
+      <div className="w-full px-4 sm:px-6 relative z-10">
         
         <div className="flex flex-col items-center text-center mb-20">
           <motion.h2 

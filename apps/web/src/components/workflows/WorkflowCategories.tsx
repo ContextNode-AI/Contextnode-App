@@ -18,7 +18,7 @@ const CATEGORIES = [
 export function WorkflowCategories() {
   return (
     <section className="py-24 relative">
-      <div className="container mx-auto px-4 max-w-6xl">
+      <div className="w-full px-4 sm:px-6">
         <div className="mb-12">
           <h2 className="text-3xl font-bold text-white mb-3">Browse by Category</h2>
           <p className="text-white/60 text-lg">Find the right execution system for your domain.</p>

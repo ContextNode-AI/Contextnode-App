@@ -65,7 +65,7 @@ export default function PromptsPage() {
       <div className="absolute inset-0 grid-background opacity-20 pointer-events-none" />
       <div className="absolute top-0 right-0 w-[800px] h-[600px] bg-blue-500/5 rounded-full blur-[120px] pointer-events-none" />
 
-      <div className="container max-w-7xl mx-auto px-6 relative z-10 flex flex-col md:flex-row gap-10">
+      <div className="w-full px-4 sm:px-6 relative z-10 flex flex-col md:flex-row gap-10">
         
         {/* Left Sidebar (Filters & Search) */}
         <aside className="w-full md:w-64 flex-shrink-0 flex flex-col gap-8 md:sticky md:top-32 h-fit">

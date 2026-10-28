@@ -9,7 +9,7 @@ export function SearchCategory() {
       {/* Background Lighting */}
       <div className="absolute top-1/2 left-1/2 w-[800px] h-[400px] ambient-glow-secondary rounded-[100%] blur-3xl opacity-40 pointer-events-none transform -translate-x-1/2 -translate-y-1/2" />
       
-      <div className="container max-w-6xl mx-auto px-6 relative z-10">
+      <div className="w-full px-4 sm:px-6 relative z-10">
         <div className="flex flex-col items-center mb-16 text-center">
           <motion.h2 
             initial={{ opacity: 0, y: 20 }}
@@ -31,7 +31,7 @@ export function SearchCategory() {
         </div>
 
         {/* Two Featured Categories */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-5xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-6xl mx-auto">
           
           {/* Creative Prompts Card */}
           <motion.div 

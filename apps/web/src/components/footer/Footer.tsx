@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { ShapeHero } from "@/components/ui/ShapeHero";
 
 const XIcon = (props: any) => (
   <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor" {...props}>
@@ -16,7 +19,7 @@ const GithubIcon = (props: any) => (
 export function Footer() {
   return (
     <footer className="bg-[#05060A] border-t border-[#25343F] pt-20 pb-10">
-      <div className="container max-w-6xl mx-auto px-6">
+      <div className="w-full px-4 sm:px-6">
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-10 mb-16">
           
           <div className="col-span-2 lg:col-span-2">
@@ -69,6 +72,18 @@ export function Footer() {
             </ul>
           </div>
 
+        </div>
+
+        {/* Interactive Architecture Pill Pile (Resting directly on copyright border) */}
+        <div className="relative w-full h-[220px] sm:h-[260px] overflow-hidden mb-0">
+          <ShapeHero
+            className="w-full h-full min-h-0 sm:min-h-0 py-0 px-0 border-none bg-transparent"
+            eyebrow={null}
+            title={null}
+            description={null}
+            actions={null}
+            fill={0.35}
+          />
         </div>
 
         <div className="flex flex-col md:flex-row items-center justify-between pt-8 border-t border-[#25343F] text-sm text-slate-400">

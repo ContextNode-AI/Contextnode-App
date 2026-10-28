@@ -58,7 +58,7 @@ export function TrendingWorkflows() {
     <section className="py-24 bg-gradient-to-b from-transparent via-[#0B0B0F] to-transparent relative overflow-hidden">
       <div className="absolute top-1/2 left-0 w-full h-[300px] bg-blue-500/5 blur-[150px] -translate-y-1/2 pointer-events-none" />
       
-      <div className="container mx-auto px-4 max-w-6xl relative z-10">
+      <div className="w-full px-4 sm:px-6 relative z-10">
         <div className="mb-10">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-sm font-semibold mb-4">
             <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse" />

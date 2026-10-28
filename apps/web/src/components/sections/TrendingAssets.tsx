@@ -67,7 +67,7 @@ export function TrendingAssets() {
       {/* Subtle grid background for the whole section */}
       <div className="absolute inset-0 grid-background opacity-20 pointer-events-none" />
 
-      <div className="container max-w-7xl mx-auto px-6 relative z-10">
+      <div className="w-full px-4 sm:px-6 relative z-10">
         
         {/* Header Section */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-12 gap-6">
@@ -110,7 +110,7 @@ export function TrendingAssets() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: idx * 0.1 }}
-              key={asset.id} 
+              key={`asset-${asset.id}-${idx}`} 
             >
               <Link href={`/assets/${asset.id}`} className="group relative rounded-2xl border border-[#25343F] bg-[#25343F]/60 hover:bg-[#25343F]/90 hover:border-[#FE7F2D]/50 transition-colors overflow-hidden flex flex-col h-[340px] cursor-pointer shadow-lg hover:shadow-2xl">
                 

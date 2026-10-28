@@ -203,7 +203,7 @@ export default function PromptDetailPage({ params }: { params: Promise<{ slug: s
       <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-blue-500/5 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute bottom-0 right-1/4 w-[600px] h-[600px] bg-indigo-500/5 rounded-full blur-[120px] pointer-events-none" />
 
-      <div className="container max-w-6xl mx-auto px-6 relative z-10">
+      <div className="w-full px-4 sm:px-6 relative z-10">
         {/* Back Link */}
         <Link 
           href="/prompts"

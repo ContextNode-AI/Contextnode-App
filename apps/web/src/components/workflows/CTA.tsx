@@ -13,7 +13,7 @@ export function CTA() {
         <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[300px] h-[100px] bg-red-500/20 blur-[80px] pointer-events-none" />
       </div>
 
-      <div className="container mx-auto px-4 relative z-10 text-center max-w-4xl">
+      <div className="w-full px-4 sm:px-6 relative z-10 text-center max-w-5xl mx-auto">
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           whileInView={{ opacity: 1, scale: 1 }}

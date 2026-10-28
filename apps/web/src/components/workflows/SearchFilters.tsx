@@ -20,7 +20,7 @@ export function SearchFilters() {
 
   return (
     <section className="py-12 border-y border-white/5 bg-black/20 backdrop-blur-sm sticky top-[72px] z-40">
-      <div className="container mx-auto px-4 max-w-6xl">
+      <div className="w-full px-4 sm:px-6">
         <div className="flex flex-col md:flex-row gap-6 items-center justify-between">
           
           {/* Search Bar */}

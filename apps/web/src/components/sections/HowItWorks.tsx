@@ -59,7 +59,7 @@ export function HowItWorks() {
       <div className="absolute inset-0 grid-background opacity-20 pointer-events-none" />
       <div className="absolute top-1/2 left-1/2 w-[800px] h-[800px] ambient-glow-secondary rounded-full blur-[120px] opacity-30 pointer-events-none transform -translate-x-1/2 -translate-y-1/2" />
 
-      <div className="container max-w-5xl mx-auto px-6 relative z-10">
+      <div className="w-full px-4 sm:px-6 relative z-10">
         
         {/* Header */}
         <div className="flex flex-col items-center mb-24 text-center">

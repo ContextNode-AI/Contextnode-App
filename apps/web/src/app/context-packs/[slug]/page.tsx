@@ -389,7 +389,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
 
   return (
     <div className="min-h-screen bg-[#05060A] pt-8 pb-20 relative">
-      <div className="container max-w-7xl mx-auto px-6 relative z-10">
+      <div className="w-full px-4 sm:px-6 relative z-10">
         
         {/* Navigation Breadcrumb */}
         <Link 
