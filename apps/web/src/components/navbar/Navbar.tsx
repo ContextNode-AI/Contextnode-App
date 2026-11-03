@@ -89,9 +89,17 @@ export function Navbar() {
 
         {/* Right: Actions */}
         <div className="flex items-center gap-2">
+          {/* Sign In Link */}
+          <Link
+            href="/login"
+            className="hidden sm:flex text-sm font-medium px-4 py-2 rounded-full text-slate-300 hover:text-white transition-colors"
+          >
+            Sign In
+          </Link>
+
           {/* Desktop Get Started */}
           <Link
-            href="/get-started"
+            href="/signup"
             className={cn(
               "hidden md:flex text-sm font-medium px-5 py-2 rounded-full",
               "bg-white text-black hover:bg-white/90 transition-colors",
@@ -144,7 +152,14 @@ export function Navbar() {
             </div>
             <div className="h-px bg-white/10 w-full my-2" />
             <Link
-              href="/get-started"
+              href="/login"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="w-full text-center text-sm font-medium py-3 px-4 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition-colors"
+            >
+              Sign In
+            </Link>
+            <Link
+              href="/signup"
               onClick={() => setIsMobileMenuOpen(false)}
               className="w-full text-center text-sm font-semibold px-5 py-3.5 rounded-xl bg-white text-black hover:bg-white/90 transition-colors flex items-center justify-center gap-2 mt-1"
             >

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { LayoutProvider, useLayout } from "./LayoutContext";
 import { Sidebar } from "./Sidebar";
 import { Header } from "./Header";
@@ -10,6 +10,7 @@ import { SettingsModal } from "../modals/SettingsModal";
 
 function ShellInner({ children }: { children: React.ReactNode }) {
   const router = useRouter();
+  const pathname = usePathname();
   const { 
     toggleSidebar, 
     mobileOpen, 
@@ -17,6 +18,12 @@ function ShellInner({ children }: { children: React.ReactNode }) {
     setIsPublishOpen,
     setIsSettingsOpen
   } = useLayout();
+
+  const isAuthRoute =
+    pathname === "/login" ||
+    pathname === "/signup" ||
+    pathname === "/register" ||
+    pathname === "/forgot-password";
 
   // Global Keyboard Shortcuts Listener
   useEffect(() => {
@@ -42,6 +49,15 @@ function ShellInner({ children }: { children: React.ReactNode }) {
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [toggleSidebar, router, setMobileOpen, setIsPublishOpen, setIsSettingsOpen]);
+
+  // Render clean full-screen layout for Auth pages
+  if (isAuthRoute) {
+    return (
+      <div className="h-dvh max-h-dvh w-full overflow-y-auto bg-[#05060A] text-white antialiased font-sans">
+        {children}
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-dvh max-h-dvh w-full overflow-hidden bg-[#05060A] text-white antialiased font-sans">
