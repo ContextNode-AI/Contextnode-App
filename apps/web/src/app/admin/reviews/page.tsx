@@ -56,8 +56,8 @@ export default function AdminReviewsPage() {
       await api.admin.reviewPrompt(id, action, feedback);
       setToast({
         type: "success",
-        text: action === "APPROVE" 
-          ? "Prompt approved and published successfully to the public library!" 
+        text: action === "APPROVE"
+          ? "Prompt approved and published successfully to the public library!"
           : "Prompt rejected with feedback sent back to the creator.",
       });
       // Remove from pending list
@@ -129,11 +129,10 @@ export default function AdminReviewsPage() {
         {/* Toast */}
         {toast && (
           <div
-            className={`mb-6 p-4 rounded-xl text-xs flex items-center gap-3 animate-in fade-in ${
-              toast.type === "success"
+            className={`mb-6 p-4 rounded-xl text-xs flex items-center gap-3 animate-in fade-in ${toast.type === "success"
                 ? "bg-emerald-950/50 border border-emerald-500/40 text-emerald-300"
                 : "bg-rose-950/50 border border-rose-500/40 text-rose-300"
-            }`}
+              }`}
           >
             {toast.type === "success" ? (
               <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
@@ -342,3 +341,4 @@ export default function AdminReviewsPage() {
     </div>
   );
 }
+

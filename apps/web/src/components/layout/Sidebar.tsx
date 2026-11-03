@@ -16,7 +16,9 @@ import {
   PanelLeftClose, 
   PanelLeftOpen, 
   X,
-  Sparkles
+  Sparkles,
+  ShieldCheck,
+  CheckCircle2
 } from "lucide-react";
 import { useLayout } from "./LayoutContext";
 import { useAuth } from "@/context/AuthContext";
@@ -318,6 +320,47 @@ export function Sidebar({ isMobile = false }: { isMobile?: boolean }) {
           />
         </div>
 
+        {/* Section: ADMIN OS (Only for ADMIN role) */}
+        {user?.role === "ADMIN" && (
+          <div className="space-y-1">
+            {!isCollapsed ? (
+              <div className="px-3 pt-2 pb-1 text-[11px] font-semibold tracking-wider text-purple-400 uppercase flex items-center justify-between">
+                <span>Admin OS</span>
+                <span className="text-[9px] px-1.5 py-0.2 rounded bg-purple-950 text-purple-300 border border-purple-500/30">
+                  STAFF
+                </span>
+              </div>
+            ) : (
+              <div className="my-2 border-t border-purple-500/30" />
+            )}
+
+            <NavItem
+              label="Dashboard"
+              href="/admin"
+              icon={ShieldCheck}
+              isActive={pathname === "/admin"}
+              onClick={handleLinkClick}
+              collapsed={isCollapsed}
+            />
+            <NavItem
+              label="Asset Moderation"
+              href="/admin/reviews"
+              icon={CheckCircle2}
+              isActive={pathname.startsWith("/admin/reviews")}
+              onClick={handleLinkClick}
+              collapsed={isCollapsed}
+            />
+            <NavItem
+              label="User Management"
+              href="/admin/users"
+              icon={Users}
+              isActive={pathname.startsWith("/admin/users")}
+              onClick={handleLinkClick}
+              collapsed={isCollapsed}
+            />
+          </div>
+        )}
+
         {/* Section: YOUR WORKSPACE */}
         <div className="space-y-1">
           {!isCollapsed ? (
@@ -344,12 +387,14 @@ export function Sidebar({ isMobile = false }: { isMobile?: boolean }) {
             onClick={handleLinkClick}
             collapsed={isCollapsed}
           />
-          <NavItem
-            label="Publish Resource"
-            icon={PlusCircle}
-            onClick={handlePublishClick}
-            collapsed={isCollapsed}
-          />
+          {user?.role !== "ADMIN" && (
+            <NavItem
+              label="Publish Resource"
+              icon={PlusCircle}
+              onClick={handlePublishClick}
+              collapsed={isCollapsed}
+            />
+          )}
         </div>
       </div>
 

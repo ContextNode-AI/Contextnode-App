@@ -240,6 +240,77 @@ export const api = {
   },
 
   admin: {
+    async getOverview(): Promise<{
+      metrics: {
+        totalUsers: number;
+        totalCreators: number;
+        totalAdmins: number;
+        totalPrompts: number;
+        pendingPrompts: number;
+        publishedPrompts: number;
+        totalViews: number;
+      };
+      recentPending: ImagePrompt[];
+      recentUsers: AuthUser[];
+    }> {
+      return request("/admin/overview", {
+        method: "GET",
+      });
+    },
+
+    async getUsers(params?: {
+      role?: string;
+      status?: string;
+      search?: string;
+    }): Promise<
+      (AuthUser & {
+        promptsCount: number;
+        contextPacksCount: number;
+      })[]
+    > {
+      const query = new URLSearchParams();
+      if (params?.role) query.append("role", params.role);
+      if (params?.status) query.append("status", params.status);
+      if (params?.search) query.append("search", params.search);
+      const qs = query.toString();
+      return request(`/admin/users${qs ? `?${qs}` : ""}`, {
+        method: "GET",
+      });
+    },
+
+    async getUserById(id: string): Promise<
+      AuthUser & {
+        promptsCount: number;
+        prompts: ImagePrompt[];
+      }
+    > {
+      return request(`/admin/users/${id}`, {
+        method: "GET",
+      });
+    },
+
+    async updateUserStatus(
+      id: string,
+      status: "ACTIVE" | "SUSPENDED" | "DISABLED"
+    ): Promise<AuthUser> {
+      return request(`/admin/users/${id}/status`, {
+        method: "PATCH",
+        body: JSON.stringify({ status }),
+      });
+    },
+
+    async createStaffUser(data: {
+      name: string;
+      email: string;
+      password: string;
+      role?: "ADMIN";
+    }): Promise<AuthUser> {
+      return request("/admin/users/create-staff", {
+        method: "POST",
+        body: JSON.stringify(data),
+      });
+    },
+
     async getPendingPrompts(): Promise<ImagePrompt[]> {
       return request<ImagePrompt[]>("/admin/prompts/pending-review", {
         method: "GET",
@@ -258,6 +329,36 @@ export const api = {
         method: "PATCH",
         body: JSON.stringify({ featured }),
       });
+    },
+  },
+
+  uploads: {
+    async uploadImage(file: File): Promise<{ url: string; publicId: string }> {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      let token: string | null = null;
+      if (typeof window !== "undefined") {
+        token = localStorage.getItem("contextnode_token");
+      }
+
+      const headers: Record<string, string> = {};
+      if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
+      }
+
+      const response = await fetch(`${API_BASE_URL}/uploads/image`, {
+        method: "POST",
+        headers,
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const data = await response.json().catch(() => null);
+        throw new Error(data?.message || "Failed to upload image to Cloudinary");
+      }
+
+      return response.json();
     },
   },
 };

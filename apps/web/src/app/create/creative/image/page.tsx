@@ -112,6 +112,7 @@ export default function CreateImagePromptPage() {
 
   // Submission state
   const [submitting, setSubmitting] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
 
@@ -172,19 +173,34 @@ export default function CreateImagePromptPage() {
     setVariations(variations.filter((_, i) => i !== index));
   };
 
-  // Image Upload handler (Base64 file reader)
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // Image Upload handler (Cloudinary API integration)
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size > 5 * 1024 * 1024) {
-        setErrorMsg("Image size exceeds 5MB limit.");
+      if (file.size > 10 * 1024 * 1024) {
+        setErrorMsg("Image size exceeds 10MB limit.");
         return;
       }
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreviewImageUrl(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+
+      setUploadingImage(true);
+      setErrorMsg(null);
+
+      try {
+        const uploadRes = await api.uploads.uploadImage(file);
+        setPreviewImageUrl(uploadRes.url);
+        setSuccessMsg("Image uploaded successfully to Cloudinary!");
+        setTimeout(() => setSuccessMsg(null), 3000);
+      } catch (err: unknown) {
+        const msg =
+          err instanceof Error
+            ? err.message
+            : "Failed to upload image to Cloudinary";
+        setErrorMsg(
+          `${msg}. (Tip: If Cloud Name is not configured yet, you can also paste an Image URL directly).`
+        );
+      } finally {
+        setUploadingImage(false);
+      }
     }
   };
 
@@ -335,11 +351,10 @@ export default function CreateImagePromptPage() {
                     <button
                       type="button"
                       onClick={() => setImageUploadMethod("url")}
-                      className={`px-2 py-0.5 rounded ${
-                        imageUploadMethod === "url"
+                      className={`px-2 py-0.5 rounded ${imageUploadMethod === "url"
                           ? "bg-[#FE7F2D]/20 text-[#FE7F2D] font-bold"
                           : "text-slate-400 hover:text-white"
-                      }`}
+                        }`}
                     >
                       Image URL
                     </button>
@@ -347,11 +362,10 @@ export default function CreateImagePromptPage() {
                     <button
                       type="button"
                       onClick={() => setImageUploadMethod("upload")}
-                      className={`px-2 py-0.5 rounded ${
-                        imageUploadMethod === "upload"
+                      className={`px-2 py-0.5 rounded ${imageUploadMethod === "upload"
                           ? "bg-[#FE7F2D]/20 text-[#FE7F2D] font-bold"
                           : "text-slate-400 hover:text-white"
-                      }`}
+                        }`}
                     >
                       Upload File
                     </button>
@@ -370,17 +384,29 @@ export default function CreateImagePromptPage() {
                     className="w-full px-3.5 py-2.5 rounded-xl bg-[#05060A] border border-[#25343F] text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#FE7F2D]"
                   />
                 ) : (
-                  <label className="flex flex-col items-center justify-center border-2 border-dashed border-[#25343F] hover:border-[#FE7F2D]/50 rounded-xl p-6 text-center cursor-pointer transition-all bg-[#05060A]/50">
-                    <Upload className="w-6 h-6 text-slate-400 mb-2" />
-                    <span className="text-xs font-semibold text-slate-300">
-                      Click to choose image (PNG, JPG, WebP)
-                    </span>
-                    <span className="text-[10px] text-slate-500 mt-1">
-                      Max file size: 5MB
-                    </span>
+                  <label className="flex flex-col items-center justify-center border-2 border-dashed border-[#25343F] hover:border-[#FE7F2D]/50 rounded-xl p-6 text-center cursor-pointer transition-all bg-[#05060A]/50 relative">
+                    {uploadingImage ? (
+                      <div className="flex flex-col items-center py-2">
+                        <div className="w-6 h-6 border-2 border-[#FE7F2D] border-t-transparent rounded-full animate-spin mb-2" />
+                        <span className="text-xs font-semibold text-[#FE7F2D]">
+                          Uploading to Cloudinary...
+                        </span>
+                      </div>
+                    ) : (
+                      <>
+                        <Upload className="w-6 h-6 text-slate-400 mb-2" />
+                        <span className="text-xs font-semibold text-slate-300">
+                          Click to upload image to Cloudinary (PNG, JPG, WebP)
+                        </span>
+                        <span className="text-[10px] text-slate-500 mt-1">
+                          Max file size: 10MB
+                        </span>
+                      </>
+                    )}
                     <input
                       type="file"
                       accept="image/*"
+                      disabled={uploadingImage}
                       onChange={handleFileChange}
                       className="hidden"
                     />
@@ -831,3 +857,4 @@ export default function CreateImagePromptPage() {
     </div>
   );
 }
+
