@@ -12,17 +12,13 @@ import {
   EyeOff, 
   ArrowRight, 
   CheckCircle2, 
-  AlertCircle,
-  Code2,
-  Sparkles,
-  Check
+  AlertCircle 
 } from "lucide-react";
 
 export default function SignupPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState<"USER" | "CREATOR">("USER");
   const [showPassword, setShowPassword] = useState(false);
   const [agreedTerms, setAgreedTerms] = useState(true);
   const [loading, setLoading] = useState(false);
@@ -83,46 +79,16 @@ export default function SignupPage() {
   return (
     <AuthLayout
       title="Create your account"
-      subtitle="Join thousands of engineers building and sharing production AI prompt systems."
       badge="Join Platform"
     >
-      {/* Account Type Selector Tabs */}
-      <div className="mb-5 p-1 rounded-xl bg-[#25343F]/40 border border-[#25343F] grid grid-cols-2 gap-1">
-        <button
-          type="button"
-          onClick={() => setRole("USER")}
-          className={`flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-xs font-semibold transition-all ${
-            role === "USER"
-              ? "bg-[#FE7F2D] text-slate-950 shadow-md"
-              : "text-slate-300 hover:text-white"
-          }`}
-        >
-          <Code2 className="w-3.5 h-3.5" />
-          <span>AI Developer</span>
-        </button>
-
-        <button
-          type="button"
-          onClick={() => setRole("CREATOR")}
-          className={`flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-xs font-semibold transition-all ${
-            role === "CREATOR"
-              ? "bg-[#FE7F2D] text-slate-950 shadow-md"
-              : "text-slate-300 hover:text-white"
-          }`}
-        >
-          <Sparkles className="w-3.5 h-3.5" />
-          <span>Prompt Creator</span>
-        </button>
-      </div>
-
-      {/* Social Registration */}
+      {/* Social Registration (Google) */}
       <SocialButtons
         actionLabel="Sign up with"
         dividerText="Or register with email"
-        onSocialClick={(provider) => {
+        onSocialClick={() => {
           setMessage({
             type: "success",
-            text: `Registering via ${provider === "google" ? "Google" : "GitHub"} identity...`,
+            text: "Registering via Google identity...",
           });
         }}
       />
@@ -282,3 +248,4 @@ export default function SignupPage() {
     </AuthLayout>
   );
 }
+

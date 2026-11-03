@@ -35,55 +35,19 @@ export default function LoginPage() {
     }, 1000);
   };
 
-  const fillDemoCredentials = (role: "admin" | "creator") => {
-    if (role === "admin") {
-      setEmail("427rohitkumar@gmail.com");
-      setPassword("427rohit@");
-    } else {
-      setEmail("creator@contextnode.ai");
-      setPassword("CreatorPass2026!");
-    }
-    setMessage(null);
-  };
-
   return (
     <AuthLayout
       title="Welcome back"
-      subtitle="Sign in to manage your AI prompt assets, context packs, and workflows."
       badge="Sign In"
     >
-      {/* Demo Credentials Quick-Fill Badges */}
-      <div className="mb-5 p-2.5 rounded-xl bg-[#25343F]/30 border border-[#25343F] flex flex-col gap-1.5">
-        <div className="text-[11px] font-medium text-slate-300 flex items-center justify-between">
-          <span>Quick Demo Fill:</span>
-          <span className="text-[10px] text-[#FE7F2D] font-mono">Development mode</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={() => fillDemoCredentials("admin")}
-            className="flex-1 text-[11px] font-semibold py-1 px-2.5 rounded-lg bg-[#25343F]/80 hover:bg-[#25343F] text-slate-200 hover:text-white transition-colors border border-white/5"
-          >
-            Admin Account
-          </button>
-          <button
-            type="button"
-            onClick={() => fillDemoCredentials("creator")}
-            className="flex-1 text-[11px] font-semibold py-1 px-2.5 rounded-lg bg-[#25343F]/80 hover:bg-[#25343F] text-slate-200 hover:text-white transition-colors border border-white/5"
-          >
-            Creator Account
-          </button>
-        </div>
-      </div>
-
-      {/* Social Login Buttons (Google & GitHub) */}
+      {/* Social Login Button (Google) */}
       <SocialButtons
         actionLabel="Continue with"
         dividerText="Or sign in with email"
-        onSocialClick={(provider) => {
+        onSocialClick={() => {
           setMessage({
             type: "success",
-            text: `Connecting with ${provider === "google" ? "Google" : "GitHub"} OAuth...`,
+            text: "Connecting with Google OAuth...",
           });
         }}
       />
