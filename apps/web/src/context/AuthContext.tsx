@@ -20,6 +20,7 @@ interface AuthContextType {
   register: (data: { name: string; email: string; password: string }) => Promise<AuthUser>;
   logout: () => Promise<void>;
   refreshSession: () => Promise<AuthUser | null>;
+  updateProfile: (data: { name?: string; bio?: string; avatar?: string }) => Promise<AuthUser>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -155,6 +156,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
+  const updateProfile = useCallback(
+    async (data: { name?: string; bio?: string; avatar?: string }) => {
+      setIsLoading(true);
+      try {
+        const updated = await api.users.updateMyProfile(data);
+        setUser(updated);
+        localStorage.setItem(USER_KEY, JSON.stringify(updated));
+        return updated;
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    []
+  );
+
   const isAuthenticated = !!user && !!token;
   const isCreator = user?.role === "CREATOR" || user?.role === "ADMIN";
   const isAdmin = user?.role === "ADMIN";
@@ -172,6 +188,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         register,
         logout,
         refreshSession,
+        updateProfile,
       }}
     >
       {children}

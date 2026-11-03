@@ -338,8 +338,10 @@ export function Sidebar({ isMobile = false }: { isMobile?: boolean }) {
           />
           <NavItem
             label="Creator Profile"
+            href="/profile"
             icon={User}
-            onClick={handleSettingsClick}
+            isActive={pathname === "/profile"}
+            onClick={handleLinkClick}
             collapsed={isCollapsed}
           />
           <NavItem

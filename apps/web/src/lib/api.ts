@@ -10,6 +10,7 @@ export interface AuthUser {
   plan: "FREE" | "PAID";
   avatar?: string | null;
   bio?: string | null;
+  googleId?: string | null;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -161,4 +162,24 @@ export const api = {
       }
     },
   },
+
+  users: {
+    async getMyProfile(): Promise<AuthUser> {
+      return request<AuthUser>("/users/profile/me", {
+        method: "GET",
+      });
+    },
+
+    async updateMyProfile(data: {
+      name?: string;
+      bio?: string;
+      avatar?: string;
+    }): Promise<AuthUser> {
+      return request<AuthUser>("/users/profile/me", {
+        method: "PATCH",
+        body: JSON.stringify(data),
+      });
+    },
+  },
 };
+

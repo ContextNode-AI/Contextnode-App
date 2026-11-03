@@ -27,6 +27,7 @@ function getPageMetadata(pathname: string) {
   }
   if (pathname.startsWith("/workflows")) return { title: "Workflows", breadcrumb: "Workflows" };
   if (pathname.startsWith("/search")) return { title: "Search", breadcrumb: "Search Resources" };
+  if (pathname === "/profile") return { title: "Creator Profile", breadcrumb: "Creator Studio / Profile" };
   return { title: "ContextNode", breadcrumb: "Developer Workspace" };
 }
 
