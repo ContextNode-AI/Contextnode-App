@@ -350,6 +350,7 @@ export const api = {
       const response = await fetch(`${API_BASE_URL}/uploads/image`, {
         method: "POST",
         headers,
+        credentials: "include",
         body: formData,
       });
 
