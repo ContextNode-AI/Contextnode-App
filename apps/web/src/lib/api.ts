@@ -65,11 +65,36 @@ async function request<T>(
   }
 
   try {
-    const response = await fetch(url, {
+    let response = await fetch(url, {
       ...options,
       headers,
       credentials: "include", // Send & receive HTTP-only cookies
     });
+
+    // Auto-refresh token if expired (401) and not already on auth endpoints
+    if (response.status === 401 && !endpoint.includes("/auth/")) {
+      try {
+        const refreshRes = await fetch(`${API_BASE_URL}/auth/refresh`, {
+          method: "POST",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+        });
+        if (refreshRes.ok) {
+          const refreshData = await refreshRes.json();
+          if (refreshData?.accessToken) {
+            localStorage.setItem("contextnode_token", refreshData.accessToken);
+            headers["Authorization"] = `Bearer ${refreshData.accessToken}`;
+            response = await fetch(url, {
+              ...options,
+              headers,
+              credentials: "include",
+            });
+          }
+        }
+      } catch {
+        // Fallback to error handling below
+      }
+    }
 
     const data = await response.json().catch(() => null);
 
@@ -237,6 +262,64 @@ export const api = {
         method: "GET",
       });
     },
+
+    // ══════════════════════════════════════════════════════════════════
+    // CREATIVE VIDEO PROMPTS (from context-pack)
+    // ══════════════════════════════════════════════════════════════════
+    async createCreativeVideo(data: CreateVideoPromptPayload): Promise<ImagePrompt> {
+      return request<ImagePrompt>("/prompts/creative/video", {
+        method: "POST",
+        body: JSON.stringify(data),
+      });
+    },
+
+    async getMyVideoPrompts(): Promise<ImagePrompt[]> {
+      return request<ImagePrompt[]>("/prompts/creative/video/my", {
+        method: "GET",
+      });
+    },
+
+    async getMyVideoPromptById(id: string): Promise<ImagePrompt> {
+      return request<ImagePrompt>(`/prompts/creative/video/my/${id}`, {
+        method: "GET",
+      });
+    },
+
+    async updateVideoPrompt(id: string, data: Partial<CreateVideoPromptPayload>): Promise<ImagePrompt> {
+      return request<ImagePrompt>(`/prompts/creative/video/${id}`, {
+        method: "PATCH",
+        body: JSON.stringify(data),
+      });
+    },
+
+    async submitVideoForReview(id: string): Promise<ImagePrompt> {
+      return request<ImagePrompt>(`/prompts/creative/video/${id}/submit-review`, {
+        method: "POST",
+      });
+    },
+
+    async deleteVideoPrompt(id: string): Promise<{ success: boolean; message: string }> {
+      return request<{ success: boolean; message: string }>(`/prompts/creative/video/${id}`, {
+        method: "DELETE",
+      });
+    },
+
+    async getPublicVideos(params?: { category?: string; tool?: string; search?: string }): Promise<ImagePrompt[]> {
+      const query = new URLSearchParams();
+      if (params?.category) query.append("category", params.category);
+      if (params?.tool) query.append("tool", params.tool);
+      if (params?.search) query.append("search", params.search);
+      const qs = query.toString();
+      return request<ImagePrompt[]>(`/prompts/creative/video${qs ? `?${qs}` : ""}`, {
+        method: "GET",
+      });
+    },
+
+    async getPublicVideoBySlug(slug: string): Promise<ImagePrompt> {
+      return request<ImagePrompt>(`/prompts/creative/video/${slug}`, {
+        method: "GET",
+      });
+    },
   },
 
   admin: {
@@ -356,7 +439,42 @@ export const api = {
 
       if (!response.ok) {
         const data = await response.json().catch(() => null);
-        throw new Error(data?.message || "Failed to upload image to Cloudinary");
+        const errMsg = Array.isArray(data?.message)
+          ? data.message.join(", ")
+          : data?.message || "Failed to upload image";
+        throw new Error(errMsg);
+      }
+
+      return response.json();
+    },
+
+    async uploadVideo(file: File): Promise<{ url: string; publicId: string; posterUrl?: string }> {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      let token: string | null = null;
+      if (typeof window !== "undefined") {
+        token = localStorage.getItem("contextnode_token");
+      }
+
+      const headers: Record<string, string> = {};
+      if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
+      }
+
+      const response = await fetch(`${API_BASE_URL}/uploads/video`, {
+        method: "POST",
+        headers,
+        credentials: "include",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const data = await response.json().catch(() => null);
+        const errMsg = Array.isArray(data?.message)
+          ? data.message.join(", ")
+          : data?.message || "Failed to upload video";
+        throw new Error(errMsg);
       }
 
       return response.json();
@@ -384,12 +502,22 @@ export interface ImagePrompt {
   prompt: string;
   negativePrompt?: string;
   previewImageUrl?: string;
+  previewVideoUrl?: string;
   previewContent?: string;
   aiTool?: string;
   model?: string;
   aspectRatio?: string;
   style?: string;
   useCase?: string;
+  duration?: string;
+  fps?: number;
+  motionStrength?: number;
+  cameraMovement?: string;
+  seed?: string;
+  firstFrameImageUrl?: string;
+  firstFramePrompt?: string;
+  lastFrameImageUrl?: string;
+  lastFramePrompt?: string;
   category: string;
   tags: string[];
   accessType: "FREE" | "PAID";
@@ -424,12 +552,22 @@ export interface CreateImagePromptPayload {
   prompt: string;
   negativePrompt?: string;
   previewImageUrl?: string;
+  previewVideoUrl?: string;
   previewContent?: string;
   aiTool?: string;
   model?: string;
   aspectRatio?: string;
   style?: string;
   useCase?: string;
+  duration?: string;
+  fps?: number;
+  motionStrength?: number;
+  cameraMovement?: string;
+  seed?: string;
+  firstFrameImageUrl?: string;
+  firstFramePrompt?: string;
+  lastFrameImageUrl?: string;
+  lastFramePrompt?: string;
   category: string;
   tags?: string[];
   variations?: Array<{
@@ -447,4 +585,47 @@ export interface CreateImagePromptPayload {
   seoDescription?: string;
   ogImageUrl?: string;
 }
+
+export interface CreateVideoPromptPayload {
+  title: string;
+  slug?: string;
+  shortDescription: string;
+  fullDescription?: string;
+  prompt: string;
+  negativePrompt?: string;
+  previewImageUrl?: string; // Poster thumbnail
+  previewVideoUrl?: string; // Rendered Video URL
+  previewContent?: string;
+  aiTool?: string;
+  model?: string;
+  aspectRatio?: string;
+  style?: string;
+  useCase?: string;
+  duration?: string;
+  fps?: number;
+  motionStrength?: number;
+  cameraMovement?: string;
+  seed?: string;
+  firstFrameImageUrl?: string;
+  firstFramePrompt?: string;
+  lastFrameImageUrl?: string;
+  lastFramePrompt?: string;
+  category: string;
+  tags?: string[];
+  variations?: Array<{
+    title: string;
+    description?: string;
+    prompt: string;
+    previewImageUrl?: string;
+    orderIndex?: number;
+  }>;
+  accessType?: "FREE" | "PAID";
+  price?: number;
+  featured?: boolean;
+  status?: "DRAFT" | "PENDING_REVIEW";
+  seoTitle?: string;
+  seoDescription?: string;
+  ogImageUrl?: string;
+}
+
 

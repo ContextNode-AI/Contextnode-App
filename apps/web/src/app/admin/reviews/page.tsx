@@ -17,6 +17,8 @@ import {
   Image as ImageIcon,
   Sliders,
   User as UserIcon,
+  Video,
+  Film,
 } from "lucide-react";
 
 export default function AdminReviewsPage() {
@@ -215,13 +217,26 @@ export default function AdminReviewsPage() {
 
                 {/* Prompt Details & Media Grid */}
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-                  {/* Thumbnail / Image Preview */}
+                  {/* Thumbnail / Video Preview */}
                   <div className="lg:col-span-1">
-                    <label className="text-[11px] font-bold text-slate-300 uppercase tracking-wider block mb-2">
-                      Submitted Output Preview
+                    <label className="text-[11px] font-bold text-slate-300 uppercase tracking-wider block mb-2 flex items-center justify-between">
+                      <span>Submitted Output Preview</span>
+                      {item.promptType === "VIDEO" && (
+                        <span className="text-[10px] text-[#FE7F2D] flex items-center gap-1 font-bold">
+                          <Film className="w-3 h-3" /> VIDEO
+                        </span>
+                      )}
                     </label>
                     <div className="h-52 w-full rounded-xl overflow-hidden bg-[#05060A] border border-[#25343F] flex items-center justify-center relative">
-                      {item.previewImageUrl ? (
+                      {item.previewVideoUrl ? (
+                        <video
+                          src={item.previewVideoUrl}
+                          poster={item.previewImageUrl || undefined}
+                          controls
+                          playsInline
+                          className="w-full h-full object-contain bg-black"
+                        />
+                      ) : item.previewImageUrl ? (
                         <img
                           src={item.previewImageUrl}
                           alt={item.title}
@@ -230,7 +245,7 @@ export default function AdminReviewsPage() {
                       ) : (
                         <div className="flex flex-col items-center gap-1 text-slate-500">
                           <ImageIcon className="w-8 h-8 opacity-40" />
-                          <span className="text-[11px]">No thumbnail provided</span>
+                          <span className="text-[11px]">No preview media</span>
                         </div>
                       )}
                     </div>
@@ -239,16 +254,36 @@ export default function AdminReviewsPage() {
                     <div className="mt-3 p-3 rounded-xl bg-[#05060A] border border-[#25343F] text-[11px] space-y-1 text-slate-300">
                       <div className="flex justify-between">
                         <span className="text-slate-500">Tool:</span>
-                        <span className="font-semibold text-white">{item.aiTool || "Midjourney"}</span>
+                        <span className="font-semibold text-white">{item.aiTool || (item.promptType === "VIDEO" ? "Runway Gen-3" : "Midjourney")}</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-slate-500">Model:</span>
-                        <span className="font-semibold text-white">{item.model || "v6.0"}</span>
+                        <span className="font-semibold text-white">{item.model || "v1.0"}</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-slate-500">Ratio:</span>
                         <span className="font-semibold text-white">{item.aspectRatio || "16:9"}</span>
                       </div>
+                      {item.promptType === "VIDEO" && (
+                        <>
+                          <div className="flex justify-between">
+                            <span className="text-slate-500">Duration:</span>
+                            <span className="font-semibold text-amber-400">{item.duration || "15s"}</span>
+                          </div>
+                          {Boolean(item.fps) && (
+                            <div className="flex justify-between">
+                              <span className="text-slate-500">FPS:</span>
+                              <span className="font-semibold text-white">{item.fps} fps</span>
+                            </div>
+                          )}
+                          {Boolean(item.cameraMovement) && (
+                            <div className="flex justify-between">
+                              <span className="text-slate-500">Camera:</span>
+                              <span className="font-semibold text-[#FE7F2D]">{item.cameraMovement}</span>
+                            </div>
+                          )}
+                        </>
+                      )}
                       <div className="flex justify-between">
                         <span className="text-slate-500">Style:</span>
                         <span className="font-semibold text-white">{item.style || "Photorealistic"}</span>

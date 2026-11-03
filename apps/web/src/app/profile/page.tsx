@@ -26,7 +26,9 @@ import {
   Terminal,
   Settings,
   Star,
-  Download
+  Download,
+  Film,
+  Video
 } from "lucide-react";
 
 export default function CreatorProfilePage() {
@@ -34,17 +36,22 @@ export default function CreatorProfilePage() {
   const { savedIds, setIsPublishOpen } = useLayout();
 
   const [activeTab, setActiveTab] = useState<"assets" | "saved" | "settings">("assets");
-  const [assetFilter, setAssetFilter] = useState<"all" | "packs" | "prompts" | "workflows">("all");
+  const [assetFilter, setAssetFilter] = useState<"all" | "packs" | "prompts" | "videos" | "workflows">("all");
   const [myLivePrompts, setMyLivePrompts] = useState<ImagePrompt[]>([]);
+  const [myLiveVideos, setMyLiveVideos] = useState<ImagePrompt[]>([]);
   const [promptsLoading, setPromptsLoading] = useState(false);
 
   useEffect(() => {
     if (isAuthenticated) {
       setPromptsLoading(true);
-      api.prompts
-        .getMyImagePrompts()
-        .then((data) => setMyLivePrompts(data || []))
-        .catch((err) => console.error("Failed to load creator prompts:", err))
+      Promise.all([
+        api.prompts.getMyImagePrompts().catch(() => []),
+        api.prompts.getMyVideoPrompts().catch(() => []),
+      ])
+        .then(([imgs, vids]) => {
+          setMyLivePrompts(imgs || []);
+          setMyLiveVideos(vids || []);
+        })
         .finally(() => setPromptsLoading(false));
     }
   }, [isAuthenticated]);
@@ -175,10 +182,36 @@ export default function CreatorProfilePage() {
     isLiveApi: true,
   }));
 
+  const mappedLiveVideos = myLiveVideos.map((p) => ({
+    id: p.id,
+    title: p.title,
+    type: "videos" as const,
+    slug: p.slug,
+    status:
+      p.status === "PUBLISHED"
+        ? "Published"
+        : p.status === "PENDING_REVIEW"
+        ? "Pending Review"
+        : p.status === "REJECTED"
+        ? "Action Required"
+        : "Draft",
+    rawStatus: p.status,
+    version: `${p.aiTool || "Video"} • ${p.duration || "15s"}`,
+    downloads: p.viewsCount || 0,
+    stars: 0,
+    category: p.category,
+    desc: p.shortDescription,
+    adminFeedback: p.adminFeedback,
+    previewImageUrl: p.previewImageUrl,
+    previewVideoUrl: p.previewVideoUrl,
+    isLiveApi: true,
+  }));
+
   const combinedAssets = [
     ...mappedLivePrompts,
+    ...mappedLiveVideos,
     ...creatorAssets.filter(
-      (a) => a.type !== "prompts" || mappedLivePrompts.length === 0
+      (a) => (a.type !== "prompts" || mappedLivePrompts.length === 0)
     ),
   ];
 
@@ -305,10 +338,18 @@ export default function CreatorProfilePage() {
 
               <Link
                 href="/create/creative/image"
-                className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#FE7F2D] hover:bg-[#FE7F2D]/90 text-slate-950 font-bold text-xs shadow-[0_0_20px_rgba(254,127,45,0.25)] transition-all cursor-pointer"
+                className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#FE7F2D] hover:bg-[#FE7F2D]/90 text-slate-950 font-bold text-xs shadow-[0_0_20px_rgba(254,127,45,0.25)] transition-all cursor-pointer"
               >
                 <Sparkles className="w-3.5 h-3.5 fill-current" />
                 <span>Create Image Prompt</span>
+              </Link>
+
+              <Link
+                href="/create/creative/video"
+                className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#25343F]/80 hover:bg-[#25343F] border border-[#FE7F2D]/40 text-slate-100 font-bold text-xs shadow-sm transition-all cursor-pointer"
+              >
+                <Film className="w-3.5 h-3.5 text-[#FE7F2D]" />
+                <span>Create Video Prompt</span>
               </Link>
 
               <button
@@ -495,8 +536,8 @@ export default function CreatorProfilePage() {
         {activeTab === "assets" && (
           <div>
             {/* Type filters */}
-            <div className="flex items-center gap-2 mb-4">
-              {(["all", "packs", "prompts", "workflows"] as const).map((filter) => (
+            <div className="flex items-center gap-2 mb-4 flex-wrap">
+              {(["all", "packs", "prompts", "videos", "workflows"] as const).map((filter) => (
                 <button
                   key={filter}
                   type="button"
@@ -507,7 +548,15 @@ export default function CreatorProfilePage() {
                       : "bg-[#25343F]/40 hover:bg-[#25343F] text-slate-300 border-[#25343F]"
                   }`}
                 >
-                  {filter === "all" ? "All Items" : filter === "packs" ? "Context Packs" : filter === "prompts" ? "Prompts" : "Workflows"}
+                  {filter === "all"
+                    ? "All Items"
+                    : filter === "packs"
+                    ? "Context Packs"
+                    : filter === "prompts"
+                    ? "Image Prompts"
+                    : filter === "videos"
+                    ? "Video Prompts"
+                    : "Workflows"}
                 </button>
               ))}
             </div>
@@ -573,7 +622,7 @@ export default function CreatorProfilePage() {
 
                     <div className="flex items-center gap-2">
                       <Link
-                        href={`/${asset.type === "packs" ? "context-packs" : asset.type === "prompts" ? "prompts" : "workflows"}/${asset.slug}`}
+                        href={`/${asset.type === "packs" ? "context-packs" : asset.type === "videos" ? "prompts/video" : asset.type === "prompts" ? "prompts" : "workflows"}/${asset.slug}`}
                         className="text-xs text-[#FE7F2D] hover:underline flex items-center gap-1 font-semibold"
                       >
                         <span>Inspect Asset</span>

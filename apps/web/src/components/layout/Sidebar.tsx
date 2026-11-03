@@ -18,7 +18,8 @@ import {
   X,
   Sparkles,
   ShieldCheck,
-  CheckCircle2
+  CheckCircle2,
+  Film
 } from "lucide-react";
 import { useLayout } from "./LayoutContext";
 import { useAuth } from "@/context/AuthContext";
@@ -298,9 +299,19 @@ export function Sidebar({ isMobile = false }: { isMobile?: boolean }) {
             label="Prompts"
             href="/prompts"
             icon={MessageSquare}
-            isActive={pathname.startsWith("/prompts")}
+            isActive={pathname === "/prompts"}
             onClick={handleLinkClick}
             badge="18+"
+            collapsed={isCollapsed}
+          />
+          <NavItem
+            label="Video Prompts"
+            href="/prompts/video"
+            icon={Film}
+            isActive={pathname.startsWith("/prompts/video")}
+            onClick={handleLinkClick}
+            badge="NEW"
+            badgeColor="bg-[#FE7F2D]/20 text-[#FE7F2D] border border-[#FE7F2D]/30"
             collapsed={isCollapsed}
           />
           <NavItem

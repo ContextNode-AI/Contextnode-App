@@ -209,6 +209,11 @@ export default function CreateImagePromptPage() {
     setErrorMsg(null);
     setSuccessMsg(null);
 
+    if (!isAuthenticated) {
+      setErrorMsg("Aap logged in nahi hain. Kripya save/submit karne se pehle Creator ya Admin account se sign in karein.");
+      return;
+    }
+
     // Validation
     if (!title.trim()) {
       setErrorMsg("Title is required.");
