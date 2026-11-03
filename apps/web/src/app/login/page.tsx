@@ -70,8 +70,11 @@ export default function LoginPage() {
         onSocialClick={() => {
           setMessage({
             type: "success",
-            text: "Connecting with Google OAuth...",
+            text: "Redirecting to Google Sign-In...",
           });
+          const apiBase =
+            process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api";
+          window.location.href = `${apiBase}/auth/google`;
         }}
       />
 

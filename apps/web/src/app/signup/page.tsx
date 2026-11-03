@@ -113,8 +113,11 @@ export default function SignupPage() {
         onSocialClick={() => {
           setMessage({
             type: "success",
-            text: "Registering via Google identity...",
+            text: "Redirecting to Google Sign-In...",
           });
+          const apiBase =
+            process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api";
+          window.location.href = `${apiBase}/auth/google`;
         }}
       />
 

@@ -38,11 +38,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     async function initAuth() {
       try {
-        const storedToken = localStorage.getItem(TOKEN_KEY);
+        let activeToken = localStorage.getItem(TOKEN_KEY);
         const storedUser = localStorage.getItem(USER_KEY);
 
-        if (storedToken) {
-          setToken(storedToken);
+        // Check if returning from Google OAuth redirect (?token=...&oauth=google)
+        if (typeof window !== "undefined") {
+          const urlParams = new URLSearchParams(window.location.search);
+          const urlToken = urlParams.get("token");
+          if (urlToken) {
+            activeToken = urlToken;
+            localStorage.setItem(TOKEN_KEY, urlToken);
+            // Clean up query param from URL without reloading
+            const cleanUrl = window.location.pathname;
+            window.history.replaceState({}, document.title, cleanUrl);
+          }
+        }
+
+        if (activeToken) {
+          setToken(activeToken);
           if (storedUser) {
             try {
               setUser(JSON.parse(storedUser));
@@ -53,7 +66,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
           // Verify with live backend session
           try {
-            const liveUser = await api.auth.me(storedToken);
+            const liveUser = await api.auth.me(activeToken);
             if (mounted) {
               setUser(liveUser);
               localStorage.setItem(USER_KEY, JSON.stringify(liveUser));
@@ -173,3 +186,4 @@ export function useAuth() {
   }
   return context;
 }
+
