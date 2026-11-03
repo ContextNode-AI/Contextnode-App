@@ -2,8 +2,10 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { AuthLayout } from "@/components/auth/AuthLayout";
 import { SocialButtons } from "@/components/auth/SocialButtons";
+import { useAuth } from "@/context/AuthContext";
 import { 
   User, 
   Mail, 
@@ -16,6 +18,9 @@ import {
 } from "lucide-react";
 
 export default function SignupPage() {
+  const router = useRouter();
+  const { register: registerUser } = useAuth();
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -41,7 +46,7 @@ export default function SignupPage() {
 
   const strength = getPasswordStrength(password);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setMessage(null);
 
@@ -67,13 +72,33 @@ export default function SignupPage() {
 
     setLoading(true);
 
-    setTimeout(() => {
-      setLoading(false);
+    try {
+      const newUser = await registerUser({
+        name: name.trim(),
+        email: email.trim().toLowerCase(),
+        password,
+      });
+
       setMessage({
         type: "success",
-        text: `Account created for ${name}! Verification link dispatched to ${email}.`,
+        text: `Creator account created successfully for ${newUser.name}! Redirecting to workspace...`,
       });
-    }, 1200);
+
+      setTimeout(() => {
+        router.push("/");
+      }, 1200);
+    } catch (err: unknown) {
+      const errorMsg =
+        err instanceof Error
+          ? err.message
+          : "Failed to create account. Please check your details and try again.";
+      setMessage({
+        type: "error",
+        text: errorMsg,
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

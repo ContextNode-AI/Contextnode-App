@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { 
@@ -8,9 +9,11 @@ import {
   Search, 
   Plus, 
   Bookmark, 
-  Command
+  Command,
+  Sparkles
 } from "lucide-react";
 import { useLayout } from "./LayoutContext";
+import { useAuth } from "@/context/AuthContext";
 
 function getPageMetadata(pathname: string) {
   if (pathname === "/") return { title: "Workspace", breadcrumb: "Home" };
@@ -38,6 +41,7 @@ export function Header() {
     setIsPublishOpen, 
     setIsSettingsOpen 
   } = useLayout();
+  const { user, isAuthenticated } = useAuth();
 
   const [headerSearch, setHeaderSearch] = useState("");
   const { title, breadcrumb } = getPageMetadata(pathname);
@@ -48,6 +52,23 @@ export function Header() {
       router.push(`/search?q=${encodeURIComponent(headerSearch.trim())}`);
     }
   };
+
+  const handlePublishClick = () => {
+    if (!isAuthenticated) {
+      router.push("/login");
+    } else {
+      setIsPublishOpen(true);
+    }
+  };
+
+  const userInitials = user?.name
+    ? user.name
+        .split(" ")
+        .map((n) => n[0])
+        .join("")
+        .slice(0, 2)
+        .toUpperCase()
+    : "CN";
 
   return (
     <header className="h-14 flex-shrink-0 border-b border-[#25343F] bg-[#05060A] px-4 sm:px-6 flex items-center justify-between z-20 select-none">
@@ -136,22 +157,48 @@ export function Header() {
         {/* Publish Action Button */}
         <button
           type="button"
-          onClick={() => setIsPublishOpen(true)}
-          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold bg-[#FE7F2D] text-slate-950 hover:bg-[#FE7F2D]/90 rounded-lg shadow-xs transition-colors"
+          onClick={handlePublishClick}
+          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold bg-[#FE7F2D] text-slate-950 hover:bg-[#FE7F2D]/90 rounded-lg shadow-xs transition-colors cursor-pointer"
         >
           <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
           <span className="hidden sm:inline">Publish</span>
         </button>
 
-        {/* Account / Settings Avatar */}
+        {/* Role Badge (Creator / Admin) */}
+        {isAuthenticated && user && (
+          <span
+            className={`hidden md:inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full border ${
+              user.role === "CREATOR"
+                ? "text-[#FE7F2D] bg-[#FE7F2D]/15 border-[#FE7F2D]/30"
+                : user.role === "ADMIN"
+                ? "text-purple-400 bg-purple-500/15 border-purple-500/30"
+                : "text-slate-400 bg-slate-500/15 border-slate-500/30"
+            }`}
+          >
+            <Sparkles className="w-2.5 h-2.5" />
+            <span>{user.role}</span>
+          </span>
+        )}
+
+        {/* Unauthenticated Sign In Link */}
+        {!isAuthenticated && (
+          <Link
+            href="/login"
+            className="hidden sm:inline-flex text-xs font-semibold px-3 py-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-[#25343F] border border-transparent hover:border-[#25343F] transition-all"
+          >
+            Sign In
+          </Link>
+        )}
+
+        {/* Account / Settings Avatar Button */}
         <button
           type="button"
           onClick={() => setIsSettingsOpen(true)}
-          className="w-7 h-7 rounded-full bg-[#25343F] hover:bg-[#25343F]/80 border border-[#25343F] flex items-center justify-center text-[11px] font-semibold text-white transition-colors ml-1"
+          className="w-7 h-7 rounded-full bg-[#25343F] hover:bg-[#25343F]/80 border border-[#25343F] flex items-center justify-center text-[11px] font-semibold text-white transition-colors ml-1 cursor-pointer"
           aria-label="User Settings"
-          title="Account & Settings"
+          title={user ? `${user.name} (${user.role})` : "Account & Settings"}
         >
-          <span>CN</span>
+          <span>{userInitials}</span>
         </button>
       </div>
     </header>

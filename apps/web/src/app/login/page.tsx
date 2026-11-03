@@ -2,11 +2,16 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { AuthLayout } from "@/components/auth/AuthLayout";
 import { SocialButtons } from "@/components/auth/SocialButtons";
+import { useAuth } from "@/context/AuthContext";
 import { Mail, Lock, Eye, EyeOff, ArrowRight, CheckCircle2, AlertCircle } from "lucide-react";
 
 export default function LoginPage() {
+  const router = useRouter();
+  const { login: loginUser } = useAuth();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -14,25 +19,43 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setMessage(null);
 
-    if (!email || !password) {
+    if (!email.trim() || !password) {
       setMessage({ type: "error", text: "Please enter both your email address and password." });
       return;
     }
 
     setLoading(true);
 
-    // Simulated client-side submission (UI only)
-    setTimeout(() => {
-      setLoading(false);
+    try {
+      const loggedInUser = await loginUser({
+        email: email.trim().toLowerCase(),
+        password,
+      });
+
       setMessage({
         type: "success",
-        text: `Welcome back! Authentication verified for ${email}.`,
+        text: `Welcome back, ${loggedInUser.name}! Signed in as ${loggedInUser.role}. Redirecting to workspace...`,
       });
-    }, 1000);
+
+      setTimeout(() => {
+        router.push("/");
+      }, 1000);
+    } catch (err: unknown) {
+      const errorMsg =
+        err instanceof Error
+          ? err.message
+          : "Invalid email or password. Please try again.";
+      setMessage({
+        type: "error",
+        text: errorMsg,
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

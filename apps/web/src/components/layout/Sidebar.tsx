@@ -19,6 +19,7 @@ import {
   Sparkles
 } from "lucide-react";
 import { useLayout } from "./LayoutContext";
+import { useAuth } from "@/context/AuthContext";
 import { cn } from "@/lib/utils";
 
 interface NavItemProps {
@@ -115,6 +116,7 @@ export function Sidebar({ isMobile = false }: { isMobile?: boolean }) {
     setIsPublishOpen,
     setIsSettingsOpen,
   } = useLayout();
+  const { user, isAuthenticated } = useAuth();
 
   const isCollapsed = !isMobile && collapsed;
 
@@ -126,7 +128,11 @@ export function Sidebar({ isMobile = false }: { isMobile?: boolean }) {
 
   const handlePublishClick = () => {
     if (isMobile) setMobileOpen(false);
-    setIsPublishOpen(true);
+    if (!isAuthenticated) {
+      window.location.href = "/login";
+    } else {
+      setIsPublishOpen(true);
+    }
   };
 
   const handleSettingsClick = () => {
@@ -156,6 +162,15 @@ export function Sidebar({ isMobile = false }: { isMobile?: boolean }) {
       }
     }
   };
+
+  const userInitials = user?.name
+    ? user.name
+        .split(" ")
+        .map((n) => n[0])
+        .join("")
+        .slice(0, 2)
+        .toUpperCase()
+    : "CN";
 
   return (
     <aside
@@ -342,25 +357,41 @@ export function Sidebar({ isMobile = false }: { isMobile?: boolean }) {
           type="button"
           onClick={handleSettingsClick}
           className={cn(
-            "w-full flex items-center rounded-xl p-2 bg-[#25343F]/80 hover:bg-[#25343F] border border-[#25343F] text-slate-200 hover:text-white transition-colors text-left group",
+            "w-full flex items-center rounded-xl p-2 bg-[#25343F]/80 hover:bg-[#25343F] border border-[#25343F] text-slate-200 hover:text-white transition-colors text-left group cursor-pointer",
             isCollapsed ? "justify-center" : "gap-3"
           )}
-          title={isCollapsed ? "Account & Settings" : undefined}
+          title={isCollapsed ? (user ? `${user.name} (${user.role})` : "Account & Settings") : undefined}
           aria-label="Account and Settings"
         >
           {/* Avatar / User icon */}
           <div className="w-8 h-8 rounded-full bg-[#05060A] border border-[#FE7F2D]/40 text-white flex items-center justify-center text-xs font-semibold flex-shrink-0 shadow-xs relative">
-            <span>CN</span>
-            <span className="absolute bottom-0 right-0 w-2 h-2 bg-[#FE7F2D] rounded-full border-2 border-[#05060A]" />
+            <span>{userInitials}</span>
+            <span
+              className={`absolute bottom-0 right-0 w-2 h-2 rounded-full border-2 border-[#05060A] ${
+                isAuthenticated ? "bg-emerald-400" : "bg-slate-500"
+              }`}
+            />
           </div>
 
           {!isCollapsed && (
             <div className="flex-1 min-w-0">
               <div className="text-xs font-semibold text-white truncate flex items-center gap-1.5">
-                Developer Mode
-                <Sparkles className="w-3 h-3 text-[#FE7F2D]" />
+                <span>{user ? user.name : "Guest Mode"}</span>
+                <span
+                  className={`text-[9px] font-bold px-1.5 py-0.2 rounded-full border ${
+                    user?.role === "CREATOR"
+                      ? "text-[#FE7F2D] bg-[#FE7F2D]/15 border-[#FE7F2D]/30"
+                      : user?.role === "ADMIN"
+                      ? "text-purple-400 bg-purple-500/15 border-purple-500/30"
+                      : "text-slate-400 bg-slate-500/15 border-slate-500/30"
+                  }`}
+                >
+                  {user ? user.role : "GUEST"}
+                </span>
               </div>
-              <div className="text-[11px] text-slate-400 truncate">Account & settings</div>
+              <div className="text-[11px] text-slate-400 truncate">
+                {user ? user.email : "Sign in to your account"}
+              </div>
             </div>
           )}
 

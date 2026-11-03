@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { LayoutProvider, useLayout } from "./LayoutContext";
+import { AuthProvider } from "@/context/AuthContext";
 import { Sidebar } from "./Sidebar";
 import { Header } from "./Header";
 import { PublishResourceModal } from "../modals/PublishResourceModal";
@@ -113,8 +114,10 @@ function ShellInner({ children }: { children: React.ReactNode }) {
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   return (
-    <LayoutProvider>
-      <ShellInner>{children}</ShellInner>
-    </LayoutProvider>
+    <AuthProvider>
+      <LayoutProvider>
+        <ShellInner>{children}</ShellInner>
+      </LayoutProvider>
+    </AuthProvider>
   );
 }

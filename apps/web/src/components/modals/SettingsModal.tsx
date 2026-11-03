@@ -1,12 +1,29 @@
 "use client";
 
-import { X, User, Command, Check } from "lucide-react";
+import Link from "next/link";
+import { X, User, Command, Check, LogOut, LogIn, Sparkles } from "lucide-react";
 import { useLayout } from "../layout/LayoutContext";
+import { useAuth } from "@/context/AuthContext";
 
 export function SettingsModal() {
   const { isSettingsOpen, setIsSettingsOpen, savedIds } = useLayout();
+  const { user, isAuthenticated, logout } = useAuth();
 
   if (!isSettingsOpen) return null;
+
+  const handleLogout = async () => {
+    await logout();
+    setIsSettingsOpen(false);
+  };
+
+  const userInitials = user?.name
+    ? user.name
+        .split(" ")
+        .map((n) => n[0])
+        .join("")
+        .slice(0, 2)
+        .toUpperCase()
+    : "CN";
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 select-none">
@@ -27,7 +44,7 @@ export function SettingsModal() {
         <div className="flex items-center justify-between p-5 border-b border-[#25343F] bg-[#25343F]/40">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-[#25343F] border border-[#25343F] text-white flex items-center justify-center font-bold text-sm shadow-xs">
-              CN
+              {userInitials}
             </div>
             <div>
               <h2 id="settings-modal-title" className="text-base font-bold text-white">
@@ -52,25 +69,55 @@ export function SettingsModal() {
         {/* Content */}
         <div className="p-5 overflow-y-auto space-y-5 text-xs text-slate-300">
           {/* User Profile Summary */}
-          <div className="p-3.5 rounded-xl bg-[#25343F]/40 border border-[#25343F] flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-lg bg-[#05060A] border border-[#25343F] flex items-center justify-center text-slate-300">
-                <User className="w-4 h-4 text-[#FE7F2D]" />
+          <div className="p-3.5 rounded-xl bg-[#25343F]/40 border border-[#25343F] flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="w-9 h-9 rounded-lg bg-[#05060A] border border-[#25343F] flex items-center justify-center text-slate-300 flex-shrink-0">
+                {user ? (
+                  <span className="font-bold text-xs text-[#FE7F2D]">{userInitials}</span>
+                ) : (
+                  <User className="w-4 h-4 text-slate-400" />
+                )}
               </div>
-              <div>
-                <div className="font-semibold text-white flex items-center gap-1.5">
-                  AI Engineer Profile
-                  <span className="text-[10px] font-semibold text-[#FE7F2D] bg-[#FE7F2D]/15 border border-[#FE7F2D]/30 px-1.5 py-0.2 rounded-full">
-                    Active
+              <div className="min-w-0">
+                <div className="font-semibold text-white flex items-center gap-1.5 truncate">
+                  <span>{user ? user.name : "Guest User"}</span>
+                  <span
+                    className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
+                      user?.role === "CREATOR"
+                        ? "text-[#FE7F2D] bg-[#FE7F2D]/15 border-[#FE7F2D]/30"
+                        : user?.role === "ADMIN"
+                        ? "text-purple-400 bg-purple-500/15 border-purple-500/30"
+                        : "text-slate-400 bg-slate-500/15 border-slate-500/30"
+                    }`}
+                  >
+                    {user ? user.role : "GUEST"}
                   </span>
                 </div>
-                <div className="text-[11px] text-slate-400">developer@contextnode.dev</div>
+                <div className="text-[11px] text-slate-400 truncate">
+                  {user ? user.email : "Sign in to author & publish AI assets"}
+                </div>
               </div>
             </div>
-            <div className="text-right">
-              <div className="text-[11px] font-semibold text-white">{savedIds.length} Saved</div>
-              <div className="text-[10px] text-slate-400">Workspace items</div>
-            </div>
+
+            {isAuthenticated ? (
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-rose-400 hover:text-rose-300 bg-rose-950/30 hover:bg-rose-950/60 border border-rose-500/30 transition-colors cursor-pointer"
+              >
+                <LogOut className="w-3.5 h-3.5" />
+                <span>Sign Out</span>
+              </button>
+            ) : (
+              <Link
+                href="/login"
+                onClick={() => setIsSettingsOpen(false)}
+                className="flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-950 bg-[#FE7F2D] hover:bg-[#FE7F2D]/90 transition-colors shadow-xs"
+              >
+                <LogIn className="w-3.5 h-3.5" />
+                <span>Sign In</span>
+              </Link>
+            )}
           </div>
 
           {/* Preferences */}
@@ -136,7 +183,7 @@ export function SettingsModal() {
           <button
             type="button"
             onClick={() => setIsSettingsOpen(false)}
-            className="px-4 py-1.5 rounded-lg text-xs font-bold bg-[#FE7F2D] text-slate-950 hover:bg-[#FE7F2D]/90 transition-colors shadow-xs"
+            className="px-4 py-1.5 rounded-lg text-xs font-bold bg-[#FE7F2D] text-slate-950 hover:bg-[#FE7F2D]/90 transition-colors shadow-xs cursor-pointer"
           >
             Done
           </button>
