@@ -181,5 +181,168 @@ export const api = {
       });
     },
   },
+
+  prompts: {
+    async createCreativeImage(data: CreateImagePromptPayload): Promise<ImagePrompt> {
+      return request<ImagePrompt>("/prompts/creative/image", {
+        method: "POST",
+        body: JSON.stringify(data),
+      });
+    },
+
+    async getMyImagePrompts(): Promise<ImagePrompt[]> {
+      return request<ImagePrompt[]>("/prompts/creative/image/my", {
+        method: "GET",
+      });
+    },
+
+    async getMyImagePromptById(id: string): Promise<ImagePrompt> {
+      return request<ImagePrompt>(`/prompts/creative/image/my/${id}`, {
+        method: "GET",
+      });
+    },
+
+    async updateImagePrompt(id: string, data: Partial<CreateImagePromptPayload>): Promise<ImagePrompt> {
+      return request<ImagePrompt>(`/prompts/creative/image/${id}`, {
+        method: "PATCH",
+        body: JSON.stringify(data),
+      });
+    },
+
+    async submitForReview(id: string): Promise<ImagePrompt> {
+      return request<ImagePrompt>(`/prompts/creative/image/${id}/submit-review`, {
+        method: "POST",
+      });
+    },
+
+    async deleteImagePrompt(id: string): Promise<{ success: boolean; message: string }> {
+      return request<{ success: boolean; message: string }>(`/prompts/creative/image/${id}`, {
+        method: "DELETE",
+      });
+    },
+
+    async getPublicPrompts(params?: { category?: string; tool?: string; search?: string }): Promise<ImagePrompt[]> {
+      const query = new URLSearchParams();
+      if (params?.category) query.append("category", params.category);
+      if (params?.tool) query.append("tool", params.tool);
+      if (params?.search) query.append("search", params.search);
+      const qs = query.toString();
+      return request<ImagePrompt[]>(`/prompts/creative/image${qs ? `?${qs}` : ""}`, {
+        method: "GET",
+      });
+    },
+
+    async getPublicPromptBySlug(slug: string): Promise<ImagePrompt> {
+      return request<ImagePrompt>(`/prompts/creative/image/${slug}`, {
+        method: "GET",
+      });
+    },
+  },
+
+  admin: {
+    async getPendingPrompts(): Promise<ImagePrompt[]> {
+      return request<ImagePrompt[]>("/admin/prompts/pending-review", {
+        method: "GET",
+      });
+    },
+
+    async reviewPrompt(id: string, action: "APPROVE" | "REJECT", feedback?: string): Promise<ImagePrompt> {
+      return request<ImagePrompt>(`/admin/prompts/${id}/review`, {
+        method: "PATCH",
+        body: JSON.stringify({ action, feedback }),
+      });
+    },
+
+    async toggleFeatured(id: string, featured?: boolean): Promise<ImagePrompt> {
+      return request<ImagePrompt>(`/admin/prompts/${id}/featured`, {
+        method: "PATCH",
+        body: JSON.stringify({ featured }),
+      });
+    },
+  },
 };
+
+export interface ImagePromptVariation {
+  id?: string;
+  title: string;
+  description?: string;
+  prompt: string;
+  previewImageUrl?: string;
+  orderIndex?: number;
+}
+
+export interface ImagePrompt {
+  id: string;
+  slug: string;
+  title: string;
+  shortDescription: string;
+  fullDescription?: string;
+  promptFamily: "CREATIVE" | "DEVELOPMENT";
+  promptType: "IMAGE" | "VIDEO" | "DEVELOPMENT" | "CODING" | "CREATIVE" | "PRODUCTIVITY" | "OTHER";
+  prompt: string;
+  negativePrompt?: string;
+  previewImageUrl?: string;
+  previewContent?: string;
+  aiTool?: string;
+  model?: string;
+  aspectRatio?: string;
+  style?: string;
+  useCase?: string;
+  category: string;
+  tags: string[];
+  accessType: "FREE" | "PAID";
+  price: number;
+  featured: boolean;
+  status: "DRAFT" | "PENDING_REVIEW" | "PUBLISHED" | "REJECTED" | "ARCHIVED";
+  adminFeedback?: string | null;
+  reviewedById?: string | null;
+  reviewedAt?: string | null;
+  seoTitle?: string;
+  seoDescription?: string;
+  ogImageUrl?: string;
+  viewsCount: number;
+  downloadsCount: number;
+  authorId: string;
+  author?: {
+    id: string;
+    name: string;
+    email?: string;
+    avatar?: string | null;
+  };
+  variations?: ImagePromptVariation[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateImagePromptPayload {
+  title: string;
+  slug?: string;
+  shortDescription: string;
+  fullDescription?: string;
+  prompt: string;
+  negativePrompt?: string;
+  previewImageUrl?: string;
+  previewContent?: string;
+  aiTool?: string;
+  model?: string;
+  aspectRatio?: string;
+  style?: string;
+  useCase?: string;
+  category: string;
+  tags?: string[];
+  variations?: Array<{
+    title: string;
+    description?: string;
+    prompt: string;
+    previewImageUrl?: string;
+    orderIndex?: number;
+  }>;
+  accessType?: "FREE" | "PAID";
+  price?: number;
+  featured?: boolean;
+  status?: "DRAFT" | "PENDING_REVIEW";
+  seoTitle?: string;
+  seoDescription?: string;
+  ogImageUrl?: string;
+}
 

@@ -1,10 +1,5 @@
 import { PROMPTS, type Prompt } from "@/lib/data";
-
-const API_BASE_URL = typeof window !== "undefined" 
-  ? "" 
-  : (process.env.API_BACKEND_URL || "http://localhost:3000");
-
-const MEDIA_HOST = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+import { api, ImagePrompt } from "@/lib/api";
 
 const CATEGORY_FALLBACK_IMAGES: Record<string, string> = {
   photography: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=800&auto=format",
@@ -40,97 +35,46 @@ function formatCategory(raw?: string): string {
     .trim();
 }
 
-export function mapAssetToPrompt(doc: any): Prompt {
-  // 1. Cover Image URL
-  let imageUrl = "";
-  if (doc.coverImage) {
-    if (typeof doc.coverImage === "object" && doc.coverImage?.url) {
-      imageUrl = doc.coverImage.url.startsWith("http")
-        ? doc.coverImage.url
-        : `${MEDIA_HOST}${doc.coverImage.url}`;
-    } else if (typeof doc.coverImage === "string") {
-      imageUrl = doc.coverImage.startsWith("http")
-        ? doc.coverImage
-        : `${MEDIA_HOST}${doc.coverImage}`;
-    }
-  }
+export function mapLivePromptToPrompt(p: ImagePrompt): Prompt {
+  const key = (p.category || p.style || p.useCase || "default").toLowerCase();
+  const image =
+    p.previewImageUrl ||
+    CATEGORY_FALLBACK_IMAGES[key] ||
+    CATEGORY_FALLBACK_IMAGES.product;
 
-  // Fallback image if cover image is missing
-  if (!imageUrl) {
-    const key = (doc.categoryText || doc.style || doc.useCase || "default").toLowerCase();
-    imageUrl = CATEGORY_FALLBACK_IMAGES[key] || "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=800&auto=format";
-  }
-
-  // 2. Author display name
-  let author = "ContextNode Creator";
-  if (doc.author) {
-    if (typeof doc.author === "object") {
-      author = doc.author.name || doc.author.email?.split("@")[0] || "ContextNode Creator";
-    }
-  }
-
-  // 3. Category
-  let rawCategory = "Creative";
-  if (doc.category && typeof doc.category === "object") {
-    rawCategory = doc.category.name || "Creative";
-  } else if (doc.categoryText) {
-    rawCategory = doc.categoryText;
-  } else if (Array.isArray(doc.tagList) && doc.tagList.length > 0) {
-    rawCategory = doc.tagList[0]?.tag || "Creative";
-  } else if (doc.style) {
-    rawCategory = doc.style;
-  }
-
-  // 4. Compatible Models
   const modelsSet = new Set<string>();
-  if (doc.model && typeof doc.model === "string" && doc.model.trim()) {
-    modelsSet.add(doc.model.trim());
+  if (p.model && p.model.trim()) {
+    modelsSet.add(p.model.trim());
   }
-  if (doc.aiTool) {
-    modelsSet.add(formatToolName(doc.aiTool));
+  if (p.aiTool) {
+    modelsSet.add(formatToolName(p.aiTool));
   }
-  // Standard formats supported by detail prompt code block
   modelsSet.add("Midjourney v6");
-  modelsSet.add("Stable Diffusion XL");
-  modelsSet.add("Veo");
-
-  // 5. Copies / downloads metric
-  const numId = Number(doc.id) || 1;
-  const copies = doc.copies || `${((numId * 739 + 1200) / 1000).toFixed(1)}k`;
+  modelsSet.add("Flux.1 Pro");
 
   return {
-    id: doc.id,
-    slug: doc.slug,
-    title: doc.title,
-    copies,
-    category: formatCategory(rawCategory),
-    image: imageUrl,
-    promptText: doc.mainPrompt || "",
-    author,
+    id: typeof p.id === "number" ? p.id : Math.abs(p.slug.split("").reduce((acc, c) => ((acc << 5) - acc) + c.charCodeAt(0), 0)),
+    slug: p.slug,
+    title: p.title,
+    copies: `${p.viewsCount || 0}`,
+    category: formatCategory(p.category),
+    image,
+    promptText: p.prompt,
+    author: p.author?.name || "ContextNode Creator",
     models: Array.from(modelsSet),
   };
 }
 
 export async function getPublishedPrompts(): Promise<Prompt[]> {
   try {
-    const url = `${API_BASE_URL}/api/ai-assets?where[status][equals]=published&where[assetType][equals]=prompt&where[promptType][equals]=image&limit=100&depth=2`;
-    const res = await fetch(url, {
-      cache: "no-store",
-    });
-
-    if (!res.ok) {
-      console.warn("API responded with non-200 status for prompts, using static fallback.");
-      return PROMPTS;
-    }
-
-    const data = await res.json();
-    const apiPrompts: Prompt[] = (data.docs || []).map(mapAssetToPrompt);
+    const livePrompts = await api.prompts.getPublicPrompts();
+    const mapped: Prompt[] = livePrompts.map(mapLivePromptToPrompt);
 
     // Combine with static prompts: API approved prompts appear FIRST
     const slugSet = new Set<string>();
     const combined: Prompt[] = [];
 
-    for (const p of apiPrompts) {
+    for (const p of mapped) {
       if (p.slug && !slugSet.has(p.slug)) {
         slugSet.add(p.slug);
         combined.push(p);
@@ -146,7 +90,7 @@ export async function getPublishedPrompts(): Promise<Prompt[]> {
 
     return combined;
   } catch (err) {
-    console.error("Error fetching published prompts:", err);
+    console.error("Error fetching published prompts from API, using fallback:", err);
     return PROMPTS;
   }
 }
@@ -155,16 +99,9 @@ export async function getPromptBySlug(slug: string): Promise<Prompt | null> {
   if (!slug) return null;
 
   try {
-    const url = `${API_BASE_URL}/api/ai-assets?where[slug][equals]=${encodeURIComponent(slug)}&where[status][equals]=published&depth=2&limit=1`;
-    const res = await fetch(url, {
-      cache: "no-store",
-    });
-
-    if (res.ok) {
-      const data = await res.json();
-      if (data.docs && data.docs.length > 0) {
-        return mapAssetToPrompt(data.docs[0]);
-      }
+    const prompt = await api.prompts.getPublicPromptBySlug(slug);
+    if (prompt) {
+      return mapLivePromptToPrompt(prompt);
     }
   } catch (err) {
     console.error(`Error querying prompt by slug "${slug}":`, err);
@@ -174,12 +111,16 @@ export async function getPromptBySlug(slug: string): Promise<Prompt | null> {
   return PROMPTS.find((p) => p.slug === slug) || null;
 }
 
-export async function getSimilarPrompts(currentSlug: string, category?: string, limit: number = 3): Promise<Prompt[]> {
+export async function getSimilarPrompts(
+  currentSlug: string,
+  category?: string,
+  limit: number = 3
+): Promise<Prompt[]> {
   const all = await getPublishedPrompts();
   const others = all.filter((p) => p.slug !== currentSlug);
 
   // First priority: same category
-  const sameCategory = category 
+  const sameCategory = category
     ? others.filter((p) => p.category.toLowerCase() === category.toLowerCase())
     : [];
 
@@ -197,4 +138,3 @@ export async function getSimilarPrompts(currentSlug: string, category?: string, 
 
   return results.slice(0, limit);
 }
-

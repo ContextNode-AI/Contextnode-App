@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 import { useLayout } from "@/components/layout/LayoutContext";
+import { api, ImagePrompt } from "@/lib/api";
 import { 
   User, 
   Mail, 
@@ -34,6 +35,19 @@ export default function CreatorProfilePage() {
 
   const [activeTab, setActiveTab] = useState<"assets" | "saved" | "settings">("assets");
   const [assetFilter, setAssetFilter] = useState<"all" | "packs" | "prompts" | "workflows">("all");
+  const [myLivePrompts, setMyLivePrompts] = useState<ImagePrompt[]>([]);
+  const [promptsLoading, setPromptsLoading] = useState(false);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      setPromptsLoading(true);
+      api.prompts
+        .getMyImagePrompts()
+        .then((data) => setMyLivePrompts(data || []))
+        .catch((err) => console.error("Failed to load creator prompts:", err))
+        .finally(() => setPromptsLoading(false));
+    }
+  }, [isAuthenticated]);
   
   // Edit profile state
   const [isEditing, setIsEditing] = useState(false);
@@ -137,7 +151,38 @@ export default function CreatorProfilePage() {
     },
   ];
 
-  const filteredAssets = creatorAssets.filter((item) => {
+  const mappedLivePrompts = myLivePrompts.map((p) => ({
+    id: p.id,
+    title: p.title,
+    type: "prompts" as const,
+    slug: p.slug,
+    status:
+      p.status === "PUBLISHED"
+        ? "Published"
+        : p.status === "PENDING_REVIEW"
+        ? "Pending Review"
+        : p.status === "REJECTED"
+        ? "Action Required"
+        : "Draft",
+    rawStatus: p.status,
+    version: p.model || "v1.0",
+    downloads: p.viewsCount || 0,
+    stars: 0,
+    category: p.category,
+    desc: p.shortDescription,
+    adminFeedback: p.adminFeedback,
+    previewImageUrl: p.previewImageUrl,
+    isLiveApi: true,
+  }));
+
+  const combinedAssets = [
+    ...mappedLivePrompts,
+    ...creatorAssets.filter(
+      (a) => a.type !== "prompts" || mappedLivePrompts.length === 0
+    ),
+  ];
+
+  const filteredAssets = combinedAssets.filter((item) => {
     if (assetFilter === "all") return true;
     return item.type === assetFilter;
   });
@@ -248,6 +293,24 @@ export default function CreatorProfilePage() {
 
             {/* Quick Actions */}
             <div className="flex items-center gap-2.5 flex-wrap">
+              {user?.role === "ADMIN" && (
+                <Link
+                  href="/admin/reviews"
+                  className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-purple-950/70 hover:bg-purple-900 border border-purple-500/40 text-purple-300 font-bold text-xs shadow-md transition-all cursor-pointer"
+                >
+                  <ShieldCheck className="w-3.5 h-3.5 text-purple-400" />
+                  <span>Admin Moderation</span>
+                </Link>
+              )}
+
+              <Link
+                href="/create/creative/image"
+                className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#FE7F2D] hover:bg-[#FE7F2D]/90 text-slate-950 font-bold text-xs shadow-[0_0_20px_rgba(254,127,45,0.25)] transition-all cursor-pointer"
+              >
+                <Sparkles className="w-3.5 h-3.5 fill-current" />
+                <span>Create Image Prompt</span>
+              </Link>
+
               <button
                 type="button"
                 onClick={handleShare}
@@ -264,15 +327,6 @@ export default function CreatorProfilePage() {
               >
                 <Edit3 className="w-3.5 h-3.5 text-[#FE7F2D]" />
                 <span>{isEditing ? "Close Edit" : "Edit Profile"}</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setIsPublishOpen(true)}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#FE7F2D] hover:bg-[#FE7F2D]/90 text-slate-950 font-bold text-xs shadow-[0_0_20px_rgba(254,127,45,0.25)] transition-all cursor-pointer"
-              >
-                <Plus className="w-4 h-4 stroke-[2.5]" />
-                <span>New Asset</span>
               </button>
             </div>
           </div>
@@ -471,12 +525,19 @@ export default function CreatorProfilePage() {
                         <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-[#25343F] text-slate-300 border border-[#25343F]">
                           {asset.category}
                         </span>
-                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md ${
+                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md flex items-center gap-1 ${
                           asset.status === "Published"
                             ? "bg-emerald-950/60 text-emerald-400 border border-emerald-500/30"
-                            : "bg-amber-950/60 text-amber-400 border border-amber-500/30"
+                            : asset.status === "Pending Review"
+                            ? "bg-amber-950/60 text-amber-400 border border-amber-500/30"
+                            : asset.status === "Action Required"
+                            ? "bg-rose-950/60 text-rose-400 border border-rose-500/30"
+                            : "bg-slate-800 text-slate-300 border border-slate-700"
                         }`}>
-                          {asset.status}
+                          {asset.status === "Pending Review" && (
+                            <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+                          )}
+                          <span>{asset.status}</span>
                         </span>
                       </div>
                       <span className="text-[10px] font-mono text-slate-500">{asset.version}</span>
@@ -485,9 +546,17 @@ export default function CreatorProfilePage() {
                     <h3 className="text-sm font-bold text-white group-hover:text-[#FE7F2D] transition-colors mb-1.5">
                       {asset.title}
                     </h3>
-                    <p className="text-xs text-slate-400 leading-relaxed mb-4">
+                    <p className="text-xs text-slate-400 leading-relaxed mb-2">
                       {asset.desc}
                     </p>
+
+                    {/* Admin Feedback note if any */}
+                    {"adminFeedback" in asset && Boolean(asset.adminFeedback) && (
+                      <div className="mb-3 p-2 rounded-lg bg-amber-950/40 border border-amber-500/30 text-[11px] text-amber-300 flex items-start gap-1.5">
+                        <AlertCircle className="w-3.5 h-3.5 flex-shrink-0 mt-0.5 text-amber-400" />
+                        <span><strong>Moderation Note:</strong> {String(asset.adminFeedback)}</span>
+                      </div>
+                    )}
                   </div>
 
                   <div className="flex items-center justify-between pt-3 border-t border-[#25343F]/60 text-xs text-slate-400">
@@ -610,3 +679,4 @@ export default function CreatorProfilePage() {
     </div>
   );
 }
+

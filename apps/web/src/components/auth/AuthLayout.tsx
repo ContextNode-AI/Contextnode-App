@@ -6,7 +6,7 @@ import { ArrowLeft, Sparkles, ShieldCheck } from "lucide-react";
 interface AuthLayoutProps {
   children: React.ReactNode;
   title: string;
-  subtitle: string;
+  subtitle?: string;
   badge?: string;
 }
 
@@ -80,9 +80,11 @@ export function AuthLayout({
             <h1 className="text-2xl font-bold text-white tracking-tight sm:text-3xl">
               {title}
             </h1>
-            <p className="mt-2 text-xs sm:text-sm text-slate-400 max-w-sm mx-auto leading-relaxed">
-              {subtitle}
-            </p>
+            {subtitle && (
+              <p className="mt-2 text-xs sm:text-sm text-slate-400 max-w-sm mx-auto leading-relaxed">
+                {subtitle}
+              </p>
+            )}
           </div>
 
           {/* Form Content */}
@@ -118,3 +120,4 @@ export function AuthLayout({
     </div>
   );
 }
+
