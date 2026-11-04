@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { AuthLayout } from "@/components/auth/AuthLayout";
 import { SocialButtons } from "@/components/auth/SocialButtons";
 import { useAuth } from "@/context/AuthContext";
+import { API_BASE_URL } from "@/lib/api";
 import { 
   User, 
   Mail, 
@@ -115,9 +116,7 @@ export default function SignupPage() {
             type: "success",
             text: "Redirecting to Google Sign-In...",
           });
-          const apiBase =
-            process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api";
-          window.location.href = `${apiBase}/auth/google`;
+          window.location.href = `${API_BASE_URL}/auth/google`;
         }}
       />
 
