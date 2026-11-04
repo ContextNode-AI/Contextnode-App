@@ -1,8 +1,0 @@
-{
-  "crons": [
-    {
-      "path": "/api/internal/render-keepalive",
-      "schedule": "*/14 * * * *"
-    }
-  ]
-}
