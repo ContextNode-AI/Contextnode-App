@@ -27,8 +27,13 @@ export interface ApiErrorResponse {
   statusCode?: number;
 }
 
-export const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api";
+const rawApiUrl = (
+  process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api"
+).replace(/\/+$/, "");
+
+export const API_BASE_URL = rawApiUrl.endsWith("/api")
+  ? rawApiUrl
+  : `${rawApiUrl}/api`;
 
 export class ApiError extends Error {
   statusCode: number;

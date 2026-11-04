@@ -17,8 +17,12 @@ export async function GET(request: NextRequest) {
   }
 
   // Step 2: Target Backend URL configuration with /health endpoint
-  const baseUrl = (process.env.RENDER_BACKEND_URL || "https://your-backend.onrender.com").replace(/\/+$/, "");
-  const targetUrl = baseUrl.endsWith("/health") ? baseUrl : `${baseUrl}/health`;
+  const baseUrl = (process.env.RENDER_BACKEND_URL || "https://api.contextnode.in").replace(/\/+$/, "");
+  const targetUrl = baseUrl.endsWith("/health")
+    ? baseUrl
+    : baseUrl.endsWith("/api")
+    ? `${baseUrl}/health`
+    : `${baseUrl}/api/health`;
 
   const startTime = Date.now();
   const timestamp = new Date().toISOString();
